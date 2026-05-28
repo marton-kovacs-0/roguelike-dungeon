@@ -5,7 +5,7 @@ public class Cell {
     private CellType cellType;
 
 
-    public Cell(int x, int y, CellType cellType, boolean isWalkable) {
+    public Cell(int x, int y, CellType cellType) {
         this.x = x;
         this.y = y;
         this.cellType = cellType;
@@ -23,7 +23,7 @@ public class Cell {
         return y;
     }
 
-    public boolean isWalkable() {
-        return cellType.isWalkable();
+    public CellType getCellType() {
+        return cellType;
     }
 }

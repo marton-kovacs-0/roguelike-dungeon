@@ -3,7 +3,8 @@ package com.marton.roguelike.world;
 public enum CellType {
     EMPTY("empty", false),
     WALL("wall", false),
-    FLOOR("floor", true);
+    FLOOR("floor", true),
+    TREE("tree", false);
 
     private final String tileName;
     private final boolean walkable;
