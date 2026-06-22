@@ -2,13 +2,14 @@ package com.marton.roguelike.render;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.GameMap;
 
 public class MapRenderer {
 
-    private SpriteBatch batch;
-    private TileAtlas atlas;
+    private final SpriteBatch batch;
+    private final TileAtlas atlas;
     private static final int RENDER_SCALE = 3;
     private static final int SOURCE_TILE_SIZE = 16;
     private static final int RENDER_TILE_SIZE = RENDER_SCALE * SOURCE_TILE_SIZE;
@@ -20,18 +21,35 @@ public class MapRenderer {
         this.atlas = atlas;
     }
 
-    public void render(GameMap gameMap) {
+    public void render(GameMap gameMap, Player player) {
+        batch.begin();
+        renderMap(gameMap);
+        renderPlayer(player, gameMap.getHeight());
+        batch.end();
+    }
+
+    private void renderMap(GameMap gameMap) {
         int width = gameMap.getWidth();
         int height = gameMap.getHeight();
-        batch.begin();
+
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Cell cell = gameMap.getCell(x, y);
-                int renderY = height - 1 - y;
-                drawTile(atlas.getRegionForType(cell.getCellType()), x, renderY);
+                drawTile(atlas.getRegionForType(cell.getCellType()), x, toRenderY(y, height));
             }
         }
-        batch.end();
+    }
+
+    private void renderPlayer(Player player, int mapHeight) {
+        drawTile(
+            atlas.getPlayerTile(),
+            player.getX(),
+            toRenderY(player.getY(), mapHeight)
+        );
+    }
+
+    private int toRenderY(int gameY, int mapHeight) {
+        return mapHeight - 1 - gameY;
     }
 
     private void drawTile(TextureRegion region, int tileX, int tileY) {

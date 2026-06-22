@@ -3,6 +3,7 @@ package com.marton.roguelike;
 import com.badlogic.gdx.ApplicationAdapter;
 
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.render.MapRenderer;
 import com.marton.roguelike.render.TileAtlas;
 import com.marton.roguelike.world.GameMap;
@@ -17,6 +18,7 @@ public class Main extends ApplicationAdapter {
     private MapLoader mapLoader;
     private GameMap gameMap;
     private String testMapPath = "assets/maps/testmap.txt";
+    private Player player;
 
 
     @Override
@@ -29,12 +31,13 @@ public class Main extends ApplicationAdapter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        player = new Player(3, 3);
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        renderer.render(gameMap);
+        renderer.render(gameMap, player);
     }
 
     @Override

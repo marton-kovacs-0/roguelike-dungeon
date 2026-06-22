@@ -14,6 +14,7 @@ public class TileAtlas {
     private final TextureRegion floorTile;
     private final TextureRegion wallTile;
     private final TextureRegion treeTile;
+    private TextureRegion playerTile;
 
 
     public TileAtlas() {
@@ -22,6 +23,7 @@ public class TileAtlas {
         floorTile = getSpecificTile(4, 0);
         wallTile = getSpecificTile(10, 17);
         treeTile = getSpecificTile(0,1);
+        playerTile = getSpecificTile(25, 0);
     }
 
     public TextureRegion getRegionForType(CellType cellType) {
@@ -44,7 +46,9 @@ public class TileAtlas {
         );
     }
 
-
+    public TextureRegion getPlayerTile() {
+        return playerTile;
+    }
 
 
 }
