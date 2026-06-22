@@ -19,4 +19,9 @@ public abstract class Entity {
     public int getY() {
         return y;
     }
+
+    public void move(int dx, int dy) {
+        x += dx;
+        y += dy;
+    }
 }

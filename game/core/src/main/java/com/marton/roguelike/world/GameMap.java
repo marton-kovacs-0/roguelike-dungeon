@@ -36,6 +36,10 @@ public class GameMap {
             && y >= 0 && y < height;
     }
 
+    public boolean isWalkable(int x, int y) {
+        return getCell(x, y).getCellType().isWalkable();
+    }
+
     public Cell[][] getCells() {
         return cells;
     }
