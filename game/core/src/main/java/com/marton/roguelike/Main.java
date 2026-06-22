@@ -8,12 +8,15 @@ import com.marton.roguelike.render.TileAtlas;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.MapLoader;
 
+import java.io.IOException;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
 
     private MapRenderer renderer;
     private MapLoader mapLoader;
     private GameMap gameMap;
+    private String testMapPath = "assets/maps/testmap.txt";
 
 
     @Override
@@ -21,7 +24,11 @@ public class Main extends ApplicationAdapter {
         TileAtlas atlas = new TileAtlas();
         renderer = new MapRenderer(atlas);
         mapLoader = new MapLoader();
-        gameMap = mapLoader.loadMap();
+        try {
+            gameMap = mapLoader.loadMap(testMapPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
