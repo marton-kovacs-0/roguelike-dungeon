@@ -1,6 +1,6 @@
 package com.marton.roguelike.render;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,35 +8,24 @@ import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.GameMap;
 
+import static com.marton.roguelike.render.CoordinateUtils.toRenderY;
+import static com.marton.roguelike.render.RenderConstants.RENDER_TILE_SIZE;
+
 public class MapRenderer {
 
     private final SpriteBatch batch;
     private final TileAtlas atlas;
     private final OrthographicCamera camera;
 
-    private static final int RENDER_SCALE = 3;
-    private static final int SOURCE_TILE_SIZE = 16;
-    private static final int RENDER_TILE_SIZE = RENDER_SCALE * SOURCE_TILE_SIZE;
 
 
-    public MapRenderer(TileAtlas atlas) {
+    public MapRenderer(TileAtlas atlas, OrthographicCamera camera) {
         this.batch = new SpriteBatch();
         this.atlas = atlas;
-        this.camera = new OrthographicCamera();
-        camera.setToOrtho(
-            false,
-            Gdx.graphics.getWidth(),
-            Gdx.graphics.getHeight()
-        );
+        this.camera = camera;
     }
 
     public void render(GameMap gameMap, Player player) {
-        camera.position.set(
-            player.getX() * RENDER_TILE_SIZE + RENDER_TILE_SIZE / 2f,
-            toRenderY(player.getY(), gameMap.getHeight()) * RENDER_TILE_SIZE + RENDER_TILE_SIZE / 2f,
-            0
-        );
-        camera.update();
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
@@ -63,14 +52,6 @@ public class MapRenderer {
             player.getX(),
             toRenderY(player.getY(), mapHeight)
         );
-    }
-
-    private int toRenderY(int gameY, int mapHeight) {
-        return mapHeight - 1 - gameY;
-    }
-
-    private float toRenderY(float gameY, int mapHeight) {
-        return mapHeight - 1 -gameY;
     }
 
     private void drawTile(TextureRegion region, int tileX, int tileY) {
