@@ -55,10 +55,10 @@ public class PlayerController {
         float bottom = nextY;
         float top = nextY + player.getHeight();
 
-        int leftTile = (int) left;
-        int rightTile = (int) (right - 0.001f);
-        int bottomTile = (int) bottom;
-        int topTile = (int) (top - 0.001f);
+        int leftTile = (int) Math.floor(left);
+        int rightTile = (int) Math.floor(right - 0.001f);
+        int bottomTile = (int) Math.floor(bottom);
+        int topTile = (int) Math.floor(top - 0.001f);
 
         return gameMap.isWalkable(leftTile, bottomTile)
             && gameMap.isWalkable(rightTile, bottomTile)

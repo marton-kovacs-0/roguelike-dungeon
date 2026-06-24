@@ -52,7 +52,7 @@ public class Main extends ApplicationAdapter {
         mapLoader = new MapLoader();
         randomMapGenerator = new RandomMapGenerator();
         try {
-            gameMap = randomMapGenerator.generate(10, 10);
+            gameMap = randomMapGenerator.generate(20, 20);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

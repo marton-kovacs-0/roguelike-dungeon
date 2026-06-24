@@ -4,6 +4,8 @@ package com.marton.roguelike.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell;
+
 public class GameMap {
 
     private int width;
@@ -38,7 +40,13 @@ public class GameMap {
     }
 
     public boolean isWalkable(int x, int y) {
-        return getCell(x, y).getCellType().isWalkable();
+        if (!isInsideMap(x, y)) {
+            return false;
+        }
+
+        return getCell(x, y)
+            .getCellType()
+            .isWalkable();
     }
 
     public Cell[][] getCells() {
