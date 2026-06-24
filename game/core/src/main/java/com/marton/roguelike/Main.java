@@ -27,6 +27,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         TileAtlas atlas = new TileAtlas();
+        player = new Player(3, 3);
         renderer = new MapRenderer(atlas);
         mapLoader = new MapLoader();
         try {
@@ -34,7 +35,6 @@ public class Main extends ApplicationAdapter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        player = new Player(3, 3);
         this.playerController = new PlayerController(player, gameMap);
     }
 
