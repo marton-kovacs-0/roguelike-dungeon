@@ -3,7 +3,7 @@ package com.marton.roguelike.entity;
 public abstract class Entity {
     private float x;
     private float y;
-    private static final float MOVE_SPEED = 5f;
+    private static final float MOVE_SPEED = 6f;
     private static final float WIDTH = 0.8f;
     private static final float HEIGHT = 0.8f;
 

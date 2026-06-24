@@ -20,28 +20,28 @@ public class PlayerController {
         float moveSpeed = player.getMoveSpeed();
         float moveAmount = moveSpeed * deltaTime;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             float nextY = player.getY() - moveAmount;
             if (canMoveTo(player.getX(), nextY)) {
                 player.move(0, -moveAmount);
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             float nextY = player.getY() + moveAmount;
             if (canMoveTo(player.getX(), nextY)) {
                 player.move(0, moveAmount);
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             float nextX = player.getX() - moveAmount;
             if (canMoveTo(nextX, player.getY())) {
                 player.move(-moveAmount, 0);
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             float nextX = player.getX() + moveAmount;
             if (canMoveTo(nextX, player.getY())) {
                 player.move(moveAmount, 0);
