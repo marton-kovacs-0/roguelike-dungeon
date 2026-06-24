@@ -1,6 +1,7 @@
 package com.marton.roguelike.world;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameMap {
@@ -42,5 +43,20 @@ public class GameMap {
 
     public Cell[][] getCells() {
         return cells;
+    }
+
+    public Cell getRandomWalkableCell() {
+        List<Cell> walkables = new ArrayList<>();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Cell cell = getCell(x, y);
+                if (cell.getCellType().isWalkable()) {
+                    walkables.add(cell);
+                }
+            }
+        }
+
+        return walkables.get((int) (Math.random() * walkables.size()));
     }
 }

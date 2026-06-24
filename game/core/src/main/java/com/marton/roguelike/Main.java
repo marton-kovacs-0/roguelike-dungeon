@@ -10,8 +10,10 @@ import com.marton.roguelike.input.PlayerController;
 import com.marton.roguelike.render.CameraController;
 import com.marton.roguelike.render.MapRenderer;
 import com.marton.roguelike.render.TileAtlas;
+import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.MapLoader;
+import com.marton.roguelike.world.RandomMapGenerator;
 
 import java.io.IOException;
 
@@ -20,6 +22,7 @@ public class Main extends ApplicationAdapter {
 
     private MapRenderer renderer;
     private MapLoader mapLoader;
+    private RandomMapGenerator randomMapGenerator;
     private GameMap gameMap;
     private String testMapPath = "assets/maps/testmap.txt";
 
@@ -33,7 +36,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         TileAtlas atlas = new TileAtlas();
-        player = new Player(3, 3);
+
 
         this.camera = new OrthographicCamera();
         camera.setToOrtho(
@@ -47,14 +50,17 @@ public class Main extends ApplicationAdapter {
 
         renderer = new MapRenderer(atlas, camera);
         mapLoader = new MapLoader();
+        randomMapGenerator = new RandomMapGenerator();
         try {
-            gameMap = mapLoader.loadMap(testMapPath);
-        } catch (IOException e) {
+            gameMap = randomMapGenerator.generate(10, 10);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-
+        Cell spawnPoint = gameMap.getRandomWalkableCell();
+        player = new Player(spawnPoint.getX(), spawnPoint.getY());
         this.playerController = new PlayerController(player, gameMap);
+
     }
 
     @Override
