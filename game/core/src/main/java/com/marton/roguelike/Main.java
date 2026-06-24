@@ -2,6 +2,7 @@ package com.marton.roguelike;
 
 import com.badlogic.gdx.ApplicationAdapter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.input.PlayerController;
@@ -39,8 +40,9 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        playerController.movePlayer();
+        playerController.movePlayer(deltaTime);
         renderer.render(gameMap, player);
     }
 

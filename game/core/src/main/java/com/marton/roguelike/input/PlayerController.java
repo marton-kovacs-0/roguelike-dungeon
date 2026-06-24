@@ -16,35 +16,54 @@ public class PlayerController {
         this.gameMap = gameMap;
     }
 
-    public void movePlayer() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            if (canMoveTo(player.getX(), player.getY() - 1)) {
-                player.move(0, -1);
+    public void movePlayer(float deltaTime) {
+        float moveSpeed = player.getMoveSpeed();
+        float moveAmount = moveSpeed * deltaTime;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            float nextY = player.getY() - moveAmount;
+            if (canMoveTo(player.getX(), nextY)) {
+                player.move(0, -moveAmount);
             }
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            if (canMoveTo(player.getX(), player.getY() + 1)) {
-                player.move(0, 1);
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            float nextY = player.getY() + moveAmount;
+            if (canMoveTo(player.getX(), nextY)) {
+                player.move(0, moveAmount);
             }
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            if (canMoveTo(player.getX() - 1, player.getY())) {
-                player.move(-1, 0);
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            float nextX = player.getX() - moveAmount;
+            if (canMoveTo(nextX, player.getY())) {
+                player.move(-moveAmount, 0);
             }
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            if (canMoveTo(player.getX() + 1, player.getY())) {
-                player.move(1, 0);
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            float nextX = player.getX() + moveAmount;
+            if (canMoveTo(nextX, player.getY())) {
+                player.move(moveAmount, 0);
             }
         }
     }
 
-    private boolean canMoveTo(int newX, int newY) {
-        return gameMap.isInsideMap(newX, newY)
-            && gameMap.isWalkable(newX, newY);
+    private boolean canMoveTo(float nextX, float nextY) {
+        float left = nextX;
+        float right = nextX + player.getWidth();
+        float bottom = nextY;
+        float top = nextY + player.getHeight();
+
+        int leftTile = (int) left;
+        int rightTile = (int) (right - 0.001f);
+        int bottomTile = (int) bottom;
+        int topTile = (int) (top - 0.001f);
+
+        return gameMap.isWalkable(leftTile, bottomTile)
+            && gameMap.isWalkable(rightTile, bottomTile)
+            && gameMap.isWalkable(leftTile, topTile)
+            && gameMap.isWalkable(rightTile, topTile);
     }
 
 

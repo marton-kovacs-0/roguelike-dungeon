@@ -41,7 +41,7 @@ public class MapRenderer {
     }
 
     private void renderPlayer(Player player, int mapHeight) {
-        drawTile(
+        drawEntity(
             atlas.getPlayerTile(),
             player.getX(),
             toRenderY(player.getY(), mapHeight)
@@ -52,11 +52,25 @@ public class MapRenderer {
         return mapHeight - 1 - gameY;
     }
 
+    private float toRenderY(float gameY, int mapHeight) {
+        return mapHeight - 1 -gameY;
+    }
+
     private void drawTile(TextureRegion region, int tileX, int tileY) {
         batch.draw(
             region,
             MAP_OFFSET_X + tileX * RENDER_TILE_SIZE,
             MAP_OFFSET_Y + tileY * RENDER_TILE_SIZE,
+            RENDER_TILE_SIZE,
+            RENDER_TILE_SIZE
+        );
+    }
+
+    private void drawEntity(TextureRegion region, float x, float y) {
+        batch.draw(
+            region,
+            MAP_OFFSET_X + x * RENDER_TILE_SIZE,
+            MAP_OFFSET_Y + y * RENDER_TILE_SIZE,
             RENDER_TILE_SIZE,
             RENDER_TILE_SIZE
         );
