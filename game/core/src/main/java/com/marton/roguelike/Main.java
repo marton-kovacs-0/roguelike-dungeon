@@ -48,7 +48,7 @@ public class Main extends ApplicationAdapter {
         mapLoader = new MapLoader();
         mapGenerator = new RoomBasedMapGenerator();
         try {
-            gameMap = mapGenerator.generate(1000, 1000);
+            gameMap = mapGenerator.generate(100, 100);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

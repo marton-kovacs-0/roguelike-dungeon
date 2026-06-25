@@ -13,6 +13,7 @@ public class RoomBasedMapGenerator implements MapGenerator{
     private final Random random;
     private final List<Room> rooms = new ArrayList<>();
     private static final int ROOM_PADDING = 1;
+    private static final int ROOM_COUNT = 20;
 
     public RoomBasedMapGenerator() {
         this.random = new Random();
@@ -23,11 +24,10 @@ public class RoomBasedMapGenerator implements MapGenerator{
         GameMap gameMap = new GameMap(width, height);
         fillWithWalls(gameMap);
 
-        for (int i = 0; i < 300; i++) {
+        while (rooms.size() < ROOM_COUNT) {
             createRoom(gameMap);
         }
         createCorridors(gameMap);
-
         return gameMap;
     }
 
@@ -86,7 +86,7 @@ public class RoomBasedMapGenerator implements MapGenerator{
                 nextRoom.getCenterX());
 
 
-            for (int x = startX; x < endX; x++) {
+            for (int x = startX; x <= endX; x++) {
                 gameMap.setCell(
                     x,
                     currentRoom.getCenterY(),
@@ -101,7 +101,7 @@ public class RoomBasedMapGenerator implements MapGenerator{
             int endY = Math.max(currentRoom.getCenterY(),
                 nextRoom.getCenterY());
 
-            for (int y = startY; y < endY; y++) {
+            for (int y = startY; y <= endY; y++) {
                 gameMap.setCell(
                     nextRoom.getCenterX(),
                     y,
