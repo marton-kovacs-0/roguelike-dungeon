@@ -11,7 +11,7 @@ public class CameraController extends InputAdapter {
 
     private static final float ZOOM_SPEED = 0.1f;
     private static final float MIN_ZOOM = 0.5f;
-    private static final float MAX_ZOOM = 4f;
+    private static final float MAX_ZOOM = 100f;
 
     public CameraController(OrthographicCamera camera) {
         this.camera = camera;

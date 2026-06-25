@@ -4,7 +4,8 @@ public enum CellType {
     EMPTY("empty", false),
     WALL("wall", false),
     FLOOR("floor", true),
-    TREE("tree", false);
+    TREE("tree", false),
+    CRAB("crab", false);
 
     private final String tileName;
     private final boolean walkable;

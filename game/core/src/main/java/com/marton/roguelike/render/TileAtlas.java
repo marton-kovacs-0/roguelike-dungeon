@@ -14,6 +14,7 @@ public class TileAtlas {
     private final TextureRegion floorTile;
     private final TextureRegion wallTile;
     private final TextureRegion treeTile;
+    private final TextureRegion crabTile;
     private TextureRegion playerTile;
 
 
@@ -24,6 +25,8 @@ public class TileAtlas {
         wallTile = getSpecificTile(10, 17);
         treeTile = getSpecificTile(0,1);
         playerTile = getSpecificTile(25, 0);
+        crabTile = getSpecificTile(22, 8);
+
     }
 
     public TextureRegion getRegionForType(CellType cellType) {
@@ -32,6 +35,7 @@ public class TileAtlas {
             case FLOOR: return floorTile;
             case TREE: return treeTile;
             case EMPTY: return emptyTile;
+            case CRAB: return crabTile;
         }
         throw new IllegalArgumentException("Invalid CellType.");
     }

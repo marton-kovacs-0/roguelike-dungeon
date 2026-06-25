@@ -1,10 +1,16 @@
-package com.marton.roguelike.world;
+package com.marton.roguelike.world.generation;
 
-public class RandomMapGenerator {
+import com.marton.roguelike.world.Cell;
+import com.marton.roguelike.world.CellType;
+import com.marton.roguelike.world.GameMap;
+
+public class RandomMapGenerator implements MapGenerator {
 
     private static final double FLOOR_CHANCE = 0.70;
-    private static final double WALL_CHANCE = 0.25;
+    private static final double WALL_CHANCE = 0.10;
+    private static final double TREE_CHANCE = 0.18;
 
+    @Override
     public GameMap generate(int width, int height) {
         GameMap gameMap = new GameMap(width, height);
 
@@ -28,11 +34,15 @@ public class RandomMapGenerator {
             return new Cell(x, y, CellType.FLOOR);
         }
 
-       if (random < FLOOR_CHANCE + WALL_CHANCE) {
-           return new Cell(x, y, CellType.WALL);
-       }
+        if (random < FLOOR_CHANCE + WALL_CHANCE) {
+            return new Cell(x, y, CellType.WALL);
+        }
 
-       return new Cell(x, y, CellType.TREE);
+        if (random < FLOOR_CHANCE + WALL_CHANCE + TREE_CHANCE) {
+            return new Cell(x, y, CellType.TREE);
+        }
+
+        return new Cell(x, y, CellType.CRAB);
     }
 
     private boolean isBorderTile(int x, int y, int width, int height) {

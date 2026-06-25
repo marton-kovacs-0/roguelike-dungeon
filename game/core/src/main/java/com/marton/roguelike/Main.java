@@ -10,19 +10,16 @@ import com.marton.roguelike.input.PlayerController;
 import com.marton.roguelike.render.CameraController;
 import com.marton.roguelike.render.MapRenderer;
 import com.marton.roguelike.render.TileAtlas;
-import com.marton.roguelike.world.Cell;
-import com.marton.roguelike.world.GameMap;
-import com.marton.roguelike.world.MapLoader;
-import com.marton.roguelike.world.RandomMapGenerator;
-
-import java.io.IOException;
+import com.marton.roguelike.world.*;
+import com.marton.roguelike.world.generation.MapGenerator;
+import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
 
     private MapRenderer renderer;
     private MapLoader mapLoader;
-    private RandomMapGenerator randomMapGenerator;
+    private MapGenerator mapGenerator;
     private GameMap gameMap;
     private String testMapPath = "assets/maps/testmap.txt";
 
@@ -37,7 +34,6 @@ public class Main extends ApplicationAdapter {
     public void create() {
         TileAtlas atlas = new TileAtlas();
 
-
         this.camera = new OrthographicCamera();
         camera.setToOrtho(
             false,
@@ -50,9 +46,9 @@ public class Main extends ApplicationAdapter {
 
         renderer = new MapRenderer(atlas, camera);
         mapLoader = new MapLoader();
-        randomMapGenerator = new RandomMapGenerator();
+        mapGenerator = new RoomBasedMapGenerator();
         try {
-            gameMap = randomMapGenerator.generate(20, 20);
+            gameMap = mapGenerator.generate(1000, 1000);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
