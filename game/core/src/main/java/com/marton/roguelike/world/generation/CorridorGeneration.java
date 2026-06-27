@@ -1,0 +1,46 @@
+package com.marton.roguelike.world.generation;
+
+import com.marton.roguelike.world.Cell;
+import com.marton.roguelike.world.CellType;
+import com.marton.roguelike.world.GameMap;
+
+import java.util.List;
+
+public class CorridorGeneration {
+
+    public void createCorridors(GameMap gameMap, List<Room> rooms) {
+        for (int i = 0; i < rooms.size() - 1; i++) {
+            Room currentRoom = rooms.get(i);
+            Room nextRoom = rooms.get(i + 1);
+
+            int startX = Math.min(currentRoom.getCenterX(),
+                nextRoom.getCenterX());
+
+            int endX = Math.max(currentRoom.getCenterX(),
+                nextRoom.getCenterX());
+
+
+            for (int x = startX; x <= endX; x++) {
+                gameMap.setCell(
+                    x,
+                    currentRoom.getCenterY(),
+                    new Cell(x, currentRoom.getCenterY(), CellType.FLOOR));
+            }
+
+
+
+            int startY = Math.min(currentRoom.getCenterY(),
+                nextRoom.getCenterY());
+
+            int endY = Math.max(currentRoom.getCenterY(),
+                nextRoom.getCenterY());
+
+            for (int y = startY; y <= endY; y++) {
+                gameMap.setCell(
+                    nextRoom.getCenterX(),
+                    y,
+                    new Cell(nextRoom.getCenterX(), y, CellType.FLOOR));
+            }
+        }
+    }
+}
