@@ -63,9 +63,9 @@ public class MapLoader {
             for (int x = 0; x < gameMap.getWidth(); x++) {
                 if (x < currentLine.length()) {
                     char symbol = currentLine.charAt(x);
-                    gameMap.setCell(x, y, new Cell(x, y, getCellTypeFromSymbol(symbol)));
+                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), getCellTypeFromSymbol(symbol)));
                 } else {
-                    gameMap.setCell(x, y, new Cell(x, y, CellType.EMPTY));
+                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), CellType.EMPTY));
                 }
             }
         }

@@ -1,40 +1,40 @@
 package com.marton.roguelike.world.generation;
 
+import com.marton.roguelike.world.TilePosition;
+
 public class Room {
 
-    private final int x;
-    private final int y;
+    private final TilePosition position;
     private final int width;
     private final int height;
 
     public Room(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
+        this.position = new TilePosition(x, y);
         this.width = width;
         this.height = height;
     }
 
     public int getLeft() {
-        return x;
+        return position.x();
     }
 
     public int getRight() {
-        return x + width - 1;
+        return position.x() + width - 1;
     }
 
     public int getTop() {
-        return y;
+        return position.y();
     }
 
     public int getBottom() {
-        return y + height - 1;
+        return position.y() + height - 1;
     }
 
     public int getCenterX() {
-        return x + width / 2;
+        return position.x() + width / 2;
     }
 
     public int getCenterY() {
-        return y + height / 2;
+        return position.y() + height / 2;
     }
 }
