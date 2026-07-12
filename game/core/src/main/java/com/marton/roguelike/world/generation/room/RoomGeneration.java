@@ -1,4 +1,4 @@
-package com.marton.roguelike.world.generation;
+package com.marton.roguelike.world.generation.room;
 
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.CellType;
@@ -34,7 +34,7 @@ public class RoomGeneration {
         int roomX = random.nextInt(gameMap.getWidth() - roomWidth) + 1;
         int roomY = random.nextInt(gameMap.getHeight() - roomHeight) + 1;
 
-        Room room = new Room(roomX, roomY, roomWidth, roomHeight);
+        Room room = new Room(new TilePosition(roomX, roomY), roomWidth, roomHeight);
 
         if (!intersects(room, ROOM_PADDING)) {
             for (int y = roomY; y < roomY + roomHeight; y++) {
