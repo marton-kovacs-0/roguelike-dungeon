@@ -1,22 +1,43 @@
 package com.marton.roguelike.world;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell;
-
 public class GameMap {
 
-    private int width;
-    private int height;
-    private Cell[][] cells;
+    private final int width;
+    private final int height;
+    private final Cell[][] cells;
 
     public GameMap(int width, int height) {
         this.width = width;
         this.height = height;
-        cells = new Cell[width][height];
+        this.cells = new Cell[width][height];
     }
+
+    // ---------------------------------------------------------------------
+    // TilePosition-based API
+    // ---------------------------------------------------------------------
+
+    public Cell getCell(TilePosition position) {
+        return getCell(position.x(), position.y());
+    }
+
+    public void setCell(TilePosition position, Cell cell) {
+        setCell(position.x(), position.y(), cell);
+    }
+
+    public boolean isInsideMap(TilePosition position) {
+        return isInsideMap(position.x(), position.y());
+    }
+
+    public boolean isWalkable(TilePosition position) {
+        return isWalkable(position.x(), position.y());
+    }
+
+    // ---------------------------------------------------------------------
+    // Raw tile coordinate API
+    // ---------------------------------------------------------------------
 
     public Cell getCell(int x, int y) {
         return cells[x][y];
@@ -24,14 +45,6 @@ public class GameMap {
 
     public void setCell(int x, int y, Cell cell) {
         cells[x][y] = cell;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 
     public boolean isInsideMap(int x, int y) {
@@ -49,9 +62,25 @@ public class GameMap {
             .isWalkable();
     }
 
+    // ---------------------------------------------------------------------
+    // Map properties
+    // ---------------------------------------------------------------------
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public Cell[][] getCells() {
         return cells;
     }
+
+    // ---------------------------------------------------------------------
+    // Utility methods
+    // ---------------------------------------------------------------------
 
     public Cell getRandomWalkableCell() {
         List<Cell> walkables = new ArrayList<>();
@@ -59,6 +88,7 @@ public class GameMap {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Cell cell = getCell(x, y);
+
                 if (cell.getCellType().isWalkable()) {
                     walkables.add(cell);
                 }

@@ -3,6 +3,7 @@ package com.marton.roguelike.world.generation;
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.CellType;
 import com.marton.roguelike.world.GameMap;
+import com.marton.roguelike.world.TilePosition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class RoomGeneration {
         if (!intersects(room, ROOM_PADDING)) {
             for (int y = roomY; y < roomY + roomHeight; y++) {
                 for (int x = roomX; x < roomX + roomWidth; x++) {
-                    gameMap.setCell(x, y, new Cell(x, y, CellType.FLOOR));
+                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), CellType.FLOOR));
                 }
             }
             rooms.add(room);

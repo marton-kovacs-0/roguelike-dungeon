@@ -3,6 +3,7 @@ package com.marton.roguelike.world.generation;
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.CellType;
 import com.marton.roguelike.world.GameMap;
+import com.marton.roguelike.world.TilePosition;
 
 public class RoomBasedMapGenerator implements MapGenerator{
 
@@ -33,7 +34,7 @@ public class RoomBasedMapGenerator implements MapGenerator{
     private void fillWithWalls(GameMap gameMap) {
         for (int y = 0; y < gameMap.getHeight(); y++) {
             for (int x = 0; x < gameMap.getWidth(); x++) {
-                gameMap.setCell(x, y, new Cell(x, y, CellType.WALL));
+                gameMap.setCell(x, y, new Cell(new TilePosition(x, y), CellType.WALL));
             }
         }
     }

@@ -12,6 +12,7 @@ import com.marton.roguelike.render.MapRenderer;
 import com.marton.roguelike.render.TileAtlas;
 import com.marton.roguelike.world.*;
 import com.marton.roguelike.world.generation.MapGenerator;
+import com.marton.roguelike.world.generation.RandomMapGenerator;
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -54,7 +55,7 @@ public class Main extends ApplicationAdapter {
         }
 
         Cell spawnPoint = gameMap.getRandomWalkableCell();
-        player = new Player(spawnPoint.getX(), spawnPoint.getY());
+        player = new Player(spawnPoint.getPosition().x(), spawnPoint.getPosition().y());
         this.playerController = new PlayerController(player, gameMap);
 
     }
