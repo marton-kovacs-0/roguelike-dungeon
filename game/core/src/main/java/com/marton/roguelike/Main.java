@@ -11,6 +11,7 @@ import com.marton.roguelike.input.PlayerController;
 import com.marton.roguelike.render.CameraController;
 import com.marton.roguelike.render.EntityRenderer;
 import com.marton.roguelike.render.MapRenderer;
+import com.marton.roguelike.render.UiRenderer;
 import com.marton.roguelike.render.atlas.EntityTileAtlas;
 import com.marton.roguelike.render.atlas.MapTileAtlas;
 import com.marton.roguelike.world.*;
@@ -25,6 +26,7 @@ public class Main extends ApplicationAdapter {
 
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
+    private UiRenderer uiRenderer;
     private EnemySpawner enemySpawner;
     private RoomBasedMapGenerator mapGenerator;
     private GameMap gameMap;
@@ -68,8 +70,10 @@ public class Main extends ApplicationAdapter {
         // Spawn player and enemies.
         Cell spawnPoint = gameMap.getRandomWalkableCell();
         player = new Player(spawnPoint.getPosition().x(), spawnPoint.getPosition().y(), 100);
+        playerController = new PlayerController(player, gameMap);
+        uiRenderer = new UiRenderer();
         enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
-        this.playerController = new PlayerController(player, gameMap);
+
     }
 
     @Override
@@ -81,6 +85,7 @@ public class Main extends ApplicationAdapter {
         cameraController.update(player.getX(), player.getY(), gameMap.getHeight());
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);
+        uiRenderer.render(player);
     }
 
     @Override
@@ -89,5 +94,6 @@ public class Main extends ApplicationAdapter {
         entityRenderer.dispose();
         mapTileAtlas.dispose();
         entityTileAtlas.dispose();
+        uiRenderer.dispose();
     }
 }

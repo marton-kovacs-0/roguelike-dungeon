@@ -1,6 +1,7 @@
 package com.marton.roguelike.render;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.marton.roguelike.entity.Player;
@@ -18,10 +19,15 @@ public class EntityRenderer {
 
     private final EntityTileAtlas entityTileAtlas;
     private final SpriteBatch batch;
+    private final BitmapFont font;
+
+    private static final int HEALTH_TEXT_OFFSET_Y = 15;
+    private static final int HEALTH_TEXT_OFFSET_X = 1;
 
     public EntityRenderer(EntityTileAtlas entityTileAtlas) {
         this.batch = new SpriteBatch();
         this.entityTileAtlas = entityTileAtlas;
+        this.font = new BitmapFont();
     }
 
     public void render(GameMap gameMap, Player player, List<Enemy> enemies, OrthographicCamera camera) {
@@ -47,6 +53,7 @@ public class EntityRenderer {
             drawEntity(
                 entityTileAtlas.getRegion(enemy.getEntityType()),
                 enemy.getX(), toRenderY(enemy.getY(), mapHeight));
+            drawEnemyHealth(enemy, mapHeight);
         }
     }
 
@@ -58,6 +65,19 @@ public class EntityRenderer {
             RENDER_TILE_SIZE,
             RENDER_TILE_SIZE
         );
+    }
+
+    private void drawEnemyHealth(Enemy enemy, int mapHeight) {
+        font.draw(
+            batch,
+            getEnemyHealthText(enemy),
+            enemy.getX() * RENDER_TILE_SIZE + HEALTH_TEXT_OFFSET_X,
+            toRenderY(enemy.getY(), mapHeight) * RENDER_TILE_SIZE + RENDER_TILE_SIZE + HEALTH_TEXT_OFFSET_Y
+        );
+    }
+
+    private String getEnemyHealthText(Enemy enemy) {
+        return enemy.getCurrentHealth() + "/" + enemy.getMaxHealth();
     }
 
     public void dispose() {

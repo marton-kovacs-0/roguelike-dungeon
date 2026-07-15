@@ -47,5 +47,13 @@ public abstract class Entity {
         return HEIGHT;
     }
 
+    public int getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
     public abstract EntityType getEntityType();
 }
