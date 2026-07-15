@@ -1,10 +1,10 @@
-package com.marton.roguelike.render;
+package com.marton.roguelike.render.atlas;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.marton.roguelike.world.CellType;
+import com.marton.roguelike.world.MapCellType;
 
-public class TileAtlas {
+public class MapTileAtlas {
     private Texture tileSheet;
 
     private static final int TILE_SPACING = 1;
@@ -14,30 +14,25 @@ public class TileAtlas {
     private final TextureRegion floorTile;
     private final TextureRegion wallTile;
     private final TextureRegion treeTile;
-    private final TextureRegion crabTile;
     private final TextureRegion closedChestTile;
 
-    private TextureRegion playerTile;
 
 
-    public TileAtlas() {
+    public MapTileAtlas() {
         this.tileSheet = new Texture("textures/tiles.png");
         emptyTile = getSpecificTile(0, 0);
         floorTile = getSpecificTile(4, 0);
         wallTile = getSpecificTile(10, 17);
         treeTile = getSpecificTile(0,1);
-        playerTile = getSpecificTile(25, 0);
-        crabTile = getSpecificTile(22, 8);
         closedChestTile = getSpecificTile(8, 6);
     }
 
-    public TextureRegion getRegionForType(CellType cellType) {
-        switch (cellType) {
+    public TextureRegion getRegion(MapCellType mapCellType) {
+        switch (mapCellType) {
             case WALL: return wallTile;
             case FLOOR: return floorTile;
             case TREE: return treeTile;
             case EMPTY: return emptyTile;
-            case CRAB: return crabTile;
             case CLOSED_CHEST: return closedChestTile;
         }
         throw new IllegalArgumentException("Invalid CellType.");
@@ -53,9 +48,7 @@ public class TileAtlas {
         );
     }
 
-    public TextureRegion getPlayerTile() {
-        return playerTile;
+    public void dispose() {
+        tileSheet.dispose();
     }
-
-
 }

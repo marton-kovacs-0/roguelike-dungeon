@@ -1,7 +1,7 @@
 package com.marton.roguelike.world.generation;
 
 import com.marton.roguelike.world.Cell;
-import com.marton.roguelike.world.CellType;
+import com.marton.roguelike.world.MapCellType;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
 
@@ -18,7 +18,7 @@ public class RandomMapGenerator implements MapGenerator {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (isBorderTile(x, y, width, height)) {
-                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), CellType.WALL));
+                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), MapCellType.WALL));
                 } else {
                     gameMap.setCell(x, y, generateRandomCell(x, y));
                 }
@@ -32,18 +32,18 @@ public class RandomMapGenerator implements MapGenerator {
         double random = Math.random();
 
         if (random < FLOOR_CHANCE) {
-            return new Cell(new TilePosition(x, y), CellType.FLOOR);
+            return new Cell(new TilePosition(x, y), MapCellType.FLOOR);
         }
 
         if (random < FLOOR_CHANCE + WALL_CHANCE) {
-            return new Cell(new TilePosition(x, y), CellType.WALL);
+            return new Cell(new TilePosition(x, y), MapCellType.WALL);
         }
 
         if (random < FLOOR_CHANCE + WALL_CHANCE + TREE_CHANCE) {
-            return new Cell(new TilePosition(x, y), CellType.TREE);
+            return new Cell(new TilePosition(x, y), MapCellType.TREE);
         }
 
-        return new Cell(new TilePosition(x, y), CellType.CRAB);
+        return new Cell(new TilePosition(x, y), MapCellType.EMPTY);
     }
 
     private boolean isBorderTile(int x, int y, int width, int height) {

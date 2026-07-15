@@ -1,7 +1,7 @@
 package com.marton.roguelike.world.generation.decoration;
 
 import com.marton.roguelike.world.Cell;
-import com.marton.roguelike.world.CellType;
+import com.marton.roguelike.world.MapCellType;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
 import com.marton.roguelike.world.generation.room.Room;
@@ -30,7 +30,7 @@ public class ChestPlacement {
             }
 
             TilePosition chestPosition = chooseRandomPlacement(validPlacements);
-            gameMap.setCell(chestPosition.x(), chestPosition.y(), new Cell(chestPosition, CellType.CLOSED_CHEST));
+            gameMap.setCell(chestPosition.x(), chestPosition.y(), new Cell(chestPosition, MapCellType.CLOSED_CHEST));
         }
     }
 

@@ -4,7 +4,7 @@ package com.marton.roguelike.render;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.marton.roguelike.entity.Player;
+import com.marton.roguelike.render.atlas.MapTileAtlas;
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.GameMap;
 
@@ -14,23 +14,21 @@ import static com.marton.roguelike.render.RenderConstants.RENDER_TILE_SIZE;
 public class MapRenderer {
 
     private final SpriteBatch batch;
-    private final TileAtlas atlas;
-    private final OrthographicCamera camera;
+    private final MapTileAtlas mapTileAtlas;
 
 
 
-    public MapRenderer(TileAtlas atlas, OrthographicCamera camera) {
+
+    public MapRenderer(MapTileAtlas mapTileAtlas) {
         this.batch = new SpriteBatch();
-        this.atlas = atlas;
-        this.camera = camera;
+        this.mapTileAtlas = mapTileAtlas;
     }
 
-    public void render(GameMap gameMap, Player player) {
+    public void render(GameMap gameMap,OrthographicCamera camera) {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
         renderMap(gameMap);
-        renderPlayer(player, gameMap.getHeight());
         batch.end();
     }
 
@@ -41,17 +39,9 @@ public class MapRenderer {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Cell cell = gameMap.getCell(x, y);
-                drawTile(atlas.getRegionForType(cell.getCellType()), x, toRenderY(y, height));
+                drawTile(mapTileAtlas.getRegion(cell.getCellType()), x, toRenderY(y, height));
             }
         }
-    }
-
-    private void renderPlayer(Player player, int mapHeight) {
-        drawEntity(
-            atlas.getPlayerTile(),
-            player.getX(),
-            toRenderY(player.getY(), mapHeight)
-        );
     }
 
     private void drawTile(TextureRegion region, int tileX, int tileY) {
@@ -64,15 +54,6 @@ public class MapRenderer {
         );
     }
 
-    private void drawEntity(TextureRegion region, float x, float y) {
-        batch.draw(
-            region,
-            x * RENDER_TILE_SIZE,
-            y * RENDER_TILE_SIZE,
-            RENDER_TILE_SIZE,
-            RENDER_TILE_SIZE
-        );
-    }
 
     public void dispose() {
         batch.dispose();

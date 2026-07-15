@@ -21,12 +21,12 @@ public class MapLoader {
         return gameMap;
     }
 
-    private CellType getCellTypeFromSymbol(char character) {
+    private MapCellType getCellTypeFromSymbol(char character) {
         switch(character) {
-            case '#': return CellType.WALL;
-            case '.': return CellType.FLOOR;
-            case 'T': return CellType.TREE;
-            case ' ': return CellType.EMPTY;
+            case '#': return MapCellType.WALL;
+            case '.': return MapCellType.FLOOR;
+            case 'T': return MapCellType.TREE;
+            case ' ': return MapCellType.EMPTY;
         }
         throw new IllegalArgumentException("Invalid character");
     }
@@ -65,7 +65,7 @@ public class MapLoader {
                     char symbol = currentLine.charAt(x);
                     gameMap.setCell(x, y, new Cell(new TilePosition(x, y), getCellTypeFromSymbol(symbol)));
                 } else {
-                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), CellType.EMPTY));
+                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), MapCellType.EMPTY));
                 }
             }
         }
