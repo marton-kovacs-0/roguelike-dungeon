@@ -10,14 +10,20 @@ public class EntityTileAtlas {
     private static final int TILE_SPACING = 1;
     private static final int TILE_SIZE = 16;
 
-    private TextureRegion playerTile;
+    private final TextureRegion playerTile;
+    private final TextureRegion skeletonTile;
+    private final TextureRegion ghostTile;
+    private final TextureRegion ogreTile;
 
     public EntityTileAtlas() {
         this.tileSheet = new Texture("textures/tiles.png");
         playerTile = getSpecificTile(25, 0);
+        skeletonTile = getSpecificTile(29, 6);
+        ghostTile = getSpecificTile(27, 6);
+        ogreTile = getSpecificTile(25, 9);
     }
 
-    public TextureRegion getSpecificTile(int column, int row) {
+    private TextureRegion getSpecificTile(int column, int row) {
         return new TextureRegion(
             tileSheet,
             (TILE_SIZE + TILE_SPACING) * column,
@@ -30,6 +36,9 @@ public class EntityTileAtlas {
     public TextureRegion getRegion(EntityType entityType) {
         switch (entityType) {
             case PLAYER: return playerTile;
+            case SKELETON: return skeletonTile;
+            case GHOST: return ghostTile;
+            case OGRE: return ogreTile;
         }
         throw new IllegalArgumentException("Invalid CellType.");
     }

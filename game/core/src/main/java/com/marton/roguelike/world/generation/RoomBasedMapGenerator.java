@@ -6,7 +6,10 @@ import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
 import com.marton.roguelike.world.generation.decoration.ChestPlacement;
 import com.marton.roguelike.world.generation.room.CorridorGeneration;
+import com.marton.roguelike.world.generation.room.Room;
 import com.marton.roguelike.world.generation.room.RoomGeneration;
+
+import java.util.List;
 
 public class RoomBasedMapGenerator implements MapGenerator{
 
@@ -49,6 +52,12 @@ public class RoomBasedMapGenerator implements MapGenerator{
             }
         }
     }
+
+    public List<Room> getRooms() {
+        return roomGeneration.getRooms();
+    }
+
+
 
 
 

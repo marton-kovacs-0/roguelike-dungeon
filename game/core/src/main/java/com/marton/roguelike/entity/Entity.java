@@ -1,5 +1,7 @@
 package com.marton.roguelike.entity;
 
+import com.marton.roguelike.world.EntityType;
+
 public abstract class Entity {
     private float x;
     private float y;
@@ -44,4 +46,6 @@ public abstract class Entity {
     public float getHeight() {
         return HEIGHT;
     }
+
+    public abstract EntityType getEntityType();
 }

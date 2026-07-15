@@ -63,5 +63,17 @@ public class Room {
         return positions;
     }
 
+    // Returns every floor position inside the room.
+    public List<TilePosition> getFloorPositions() {
+        List<TilePosition> positions = new ArrayList<>();
+
+        for (int y = getTop(); y <= getBottom(); y++) {
+            for (int x = getLeft(); x <= getRight(); x++) {
+                positions.add(new TilePosition(x, y));
+            }
+        }
+        return positions;
+    }
+
 
 }
