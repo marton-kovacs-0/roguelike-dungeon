@@ -1,17 +1,16 @@
 package com.marton.roguelike.world;
 
-public enum CellType {
+public enum MapCellType {
     EMPTY("empty", false),
     WALL("wall", false),
     FLOOR("floor", true),
     TREE("tree", false),
-    CRAB("crab", false),
     CLOSED_CHEST("closedChest", false);
 
     private final String tileName;
     private final boolean walkable;
 
-    CellType(String tileName, boolean walkable) {
+    MapCellType(String tileName, boolean walkable) {
         this.tileName = tileName;
         this.walkable = walkable;
     }

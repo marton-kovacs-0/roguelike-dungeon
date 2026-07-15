@@ -6,34 +6,44 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.marton.roguelike.entity.Player;
+import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.input.PlayerController;
 import com.marton.roguelike.render.CameraController;
+import com.marton.roguelike.render.EntityRenderer;
 import com.marton.roguelike.render.MapRenderer;
-import com.marton.roguelike.render.TileAtlas;
+import com.marton.roguelike.render.atlas.EntityTileAtlas;
+import com.marton.roguelike.render.atlas.MapTileAtlas;
 import com.marton.roguelike.world.*;
 import com.marton.roguelike.world.generation.MapGenerator;
-import com.marton.roguelike.world.generation.RandomMapGenerator;
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
+import com.marton.roguelike.world.generation.enemy.EnemySpawner;
+
+import java.util.List;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
 
-    private MapRenderer renderer;
-    private MapLoader mapLoader;
-    private MapGenerator mapGenerator;
+    private MapRenderer mapRenderer;
+    private EntityRenderer entityRenderer;
+    private EnemySpawner enemySpawner;
+    private RoomBasedMapGenerator mapGenerator;
     private GameMap gameMap;
-    private String testMapPath = "assets/maps/testmap.txt";
+    private MapTileAtlas mapTileAtlas;
+    private EntityTileAtlas entityTileAtlas;
 
     private OrthographicCamera camera;
     private CameraController cameraController;
 
     private Player player;
+    private List<Enemy> enemies;
     private PlayerController playerController;
 
 
     @Override
     public void create() {
-        TileAtlas atlas = new TileAtlas();
+        mapTileAtlas = new MapTileAtlas();
+        entityTileAtlas = new EntityTileAtlas();
+        enemySpawner = new EnemySpawner();
 
         this.camera = new OrthographicCamera();
         camera.setToOrtho(
@@ -45,8 +55,7 @@ public class Main extends ApplicationAdapter {
         cameraController = new CameraController(camera);
         Gdx.input.setInputProcessor(cameraController);
 
-        renderer = new MapRenderer(atlas, camera);
-        mapLoader = new MapLoader();
+        mapRenderer = new MapRenderer(mapTileAtlas);
         mapGenerator = new RoomBasedMapGenerator();
         try {
             gameMap = mapGenerator.generate(100, 100);
@@ -54,10 +63,13 @@ public class Main extends ApplicationAdapter {
             throw new RuntimeException(e);
         }
 
-        Cell spawnPoint = gameMap.getRandomWalkableCell();
-        player = new Player(spawnPoint.getPosition().x(), spawnPoint.getPosition().y());
-        this.playerController = new PlayerController(player, gameMap);
+        entityRenderer = new EntityRenderer(entityTileAtlas);
 
+        // Spawn player and enemies.
+        Cell spawnPoint = gameMap.getRandomWalkableCell();
+        player = new Player(spawnPoint.getPosition().x(), spawnPoint.getPosition().y(), 100);
+        enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
+        this.playerController = new PlayerController(player, gameMap);
     }
 
     @Override
@@ -67,13 +79,15 @@ public class Main extends ApplicationAdapter {
 
         playerController.movePlayer(deltaTime);
         cameraController.update(player.getX(), player.getY(), gameMap.getHeight());
-        renderer.render(gameMap, player);
+        mapRenderer.render(gameMap, camera);
+        entityRenderer.render(gameMap, player, enemies, camera);
     }
 
     @Override
     public void dispose() {
-        renderer.dispose();
+        mapRenderer.dispose();
+        entityRenderer.dispose();
+        mapTileAtlas.dispose();
+        entityTileAtlas.dispose();
     }
-
-
 }

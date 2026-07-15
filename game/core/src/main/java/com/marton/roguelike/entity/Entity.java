@@ -1,5 +1,7 @@
 package com.marton.roguelike.entity;
 
+import com.marton.roguelike.world.EntityType;
+
 public abstract class Entity {
     private float x;
     private float y;
@@ -7,12 +9,17 @@ public abstract class Entity {
     private static final float WIDTH = 0.8f;
     private static final float HEIGHT = 0.8f;
 
-    public Entity(float x, float y) {
+    private final int MAX_HEALTH;
+    private int currentHealth;
+
+    public Entity(float x, float y, int maxHealth) {
         if (x < 0) throw new IllegalArgumentException("Invalid x coordinate");
         if (y < 0) throw new IllegalArgumentException("Invalid y coordinate");
 
         this.x = x;
         this.y = y;
+        this.MAX_HEALTH = maxHealth;
+        this.currentHealth = maxHealth;
     }
 
     public float getX() {
@@ -39,4 +46,6 @@ public abstract class Entity {
     public float getHeight() {
         return HEIGHT;
     }
+
+    public abstract EntityType getEntityType();
 }

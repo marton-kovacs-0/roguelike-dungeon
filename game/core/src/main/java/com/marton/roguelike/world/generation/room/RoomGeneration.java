@@ -1,7 +1,7 @@
 package com.marton.roguelike.world.generation.room;
 
 import com.marton.roguelike.world.Cell;
-import com.marton.roguelike.world.CellType;
+import com.marton.roguelike.world.MapCellType;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
 
@@ -39,7 +39,7 @@ public class RoomGeneration {
         if (!intersects(room, ROOM_PADDING)) {
             for (int y = roomY; y < roomY + roomHeight; y++) {
                 for (int x = roomX; x < roomX + roomWidth; x++) {
-                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), CellType.FLOOR));
+                    gameMap.setCell(x, y, new Cell(new TilePosition(x, y), MapCellType.FLOOR));
                 }
             }
             rooms.add(room);

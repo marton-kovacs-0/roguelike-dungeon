@@ -2,10 +2,10 @@ package com.marton.roguelike.world;
 
 public class Cell {
     private final TilePosition position;
-    private CellType cellType;
+    private MapCellType cellType;
 
 
-    public Cell(TilePosition position, CellType cellType) {
+    public Cell(TilePosition position, MapCellType cellType) {
         this.position = position;
         this.cellType = cellType;
     }
@@ -18,7 +18,7 @@ public class Cell {
         return position;
     }
 
-    public CellType getCellType() {
+    public MapCellType getCellType() {
         return cellType;
     }
 }

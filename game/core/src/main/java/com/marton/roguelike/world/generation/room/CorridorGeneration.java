@@ -1,7 +1,7 @@
 package com.marton.roguelike.world.generation.room;
 
 import com.marton.roguelike.world.Cell;
-import com.marton.roguelike.world.CellType;
+import com.marton.roguelike.world.MapCellType;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
 
@@ -25,7 +25,7 @@ public class CorridorGeneration {
                 gameMap.setCell(
                     x,
                     currentRoom.getCenterY(),
-                    new Cell(new TilePosition(x, currentRoom.getCenterY()), CellType.FLOOR));
+                    new Cell(new TilePosition(x, currentRoom.getCenterY()), MapCellType.FLOOR));
             }
 
 
@@ -40,7 +40,7 @@ public class CorridorGeneration {
                 gameMap.setCell(
                     nextRoom.getCenterX(),
                     y,
-                    new Cell(new TilePosition(nextRoom.getCenterX(), y), CellType.FLOOR));
+                    new Cell(new TilePosition(nextRoom.getCenterX(), y), MapCellType.FLOOR));
             }
         }
     }
