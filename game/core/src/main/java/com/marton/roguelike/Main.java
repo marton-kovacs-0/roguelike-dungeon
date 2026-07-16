@@ -40,6 +40,8 @@ public class Main extends ApplicationAdapter {
     private List<Enemy> enemies;
     private PlayerController playerController;
 
+    private boolean gameOver = false;
+
 
     @Override
     public void create() {
@@ -81,8 +83,18 @@ public class Main extends ApplicationAdapter {
         float deltaTime = Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        playerController.movePlayer(deltaTime);
-        cameraController.update(player.getX(), player.getY(), gameMap.getHeight());
+        if (player.isDead() && !gameOver) {
+            gameOver = true;
+            System.out.println("GAME OVER");
+        }
+
+        if (!gameOver) {
+            playerController.movePlayer(deltaTime);
+            playerController.attack(enemies);
+            cameraController.update(player.getX(), player.getY(), gameMap.getHeight());
+        }
+
+
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);
         uiRenderer.render(player);

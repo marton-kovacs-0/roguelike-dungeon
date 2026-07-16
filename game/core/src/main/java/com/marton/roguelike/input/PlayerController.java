@@ -3,7 +3,10 @@ package com.marton.roguelike.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.marton.roguelike.entity.Player;
+import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.world.GameMap;
+
+import java.util.List;
 
 public class PlayerController {
     private final Player player;
@@ -23,7 +26,7 @@ public class PlayerController {
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             float nextY = player.getY() - moveAmount;
             if (canMoveTo(player.getX(), nextY)) {
-                player.move(0, -moveAmount);
+                player.move(0, - moveAmount);
             }
         }
 
@@ -46,6 +49,12 @@ public class PlayerController {
             if (canMoveTo(nextX, player.getY())) {
                 player.move(moveAmount, 0);
             }
+        }
+    }
+
+    public void attack(List<Enemy> enemies) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            player.attack(enemies);
         }
     }
 

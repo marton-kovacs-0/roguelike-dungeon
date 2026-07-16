@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// Legacy map loader used for txt based map generation
 public class MapLoader {
-
-
-
     public GameMap loadMap(String filePath) throws IOException {
         List<String> lines = readLines(filePath);
         int width = getMapWidth(lines);

@@ -55,5 +55,23 @@ public abstract class Entity {
         return currentHealth;
     }
 
+    public void takeDamage(int dmg) {
+        currentHealth -= dmg;
+        if (currentHealth < 0) {
+            currentHealth = 0;
+        }
+    }
+
+    public boolean isDead() {
+        return currentHealth <= 0;
+    }
+
+    // Returns the distance between this entity and another entity.
+    public float distanceTo(Entity other) {
+        float dx = other.getX() - this.getX();
+        float dy = other.getY() - this.getY();
+        return (float) Math.sqrt(dx * dx + dy * dy);
+    }
+
     public abstract EntityType getEntityType();
 }
