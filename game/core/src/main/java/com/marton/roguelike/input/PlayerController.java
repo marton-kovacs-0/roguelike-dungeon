@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.world.GameMap;
+import static com.marton.roguelike.world.physics.CollisionHelper.canMoveTo;
 
 import java.util.List;
 
@@ -25,28 +26,28 @@ public class PlayerController {
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             float nextY = player.getY() - moveAmount;
-            if (canMoveTo(player.getX(), nextY)) {
+            if (canMoveTo(player.getX(), nextY, player, gameMap)) {
                 player.move(0, - moveAmount);
             }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             float nextY = player.getY() + moveAmount;
-            if (canMoveTo(player.getX(), nextY)) {
+            if (canMoveTo(player.getX(), nextY, player, gameMap)) {
                 player.move(0, moveAmount);
             }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             float nextX = player.getX() - moveAmount;
-            if (canMoveTo(nextX, player.getY())) {
+            if (canMoveTo(nextX, player.getY(), player, gameMap)) {
                 player.move(-moveAmount, 0);
             }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             float nextX = player.getX() + moveAmount;
-            if (canMoveTo(nextX, player.getY())) {
+            if (canMoveTo(nextX, player.getY(), player, gameMap)) {
                 player.move(moveAmount, 0);
             }
         }
@@ -58,22 +59,7 @@ public class PlayerController {
         }
     }
 
-    private boolean canMoveTo(float nextX, float nextY) {
-        float left = nextX;
-        float right = nextX + player.getWidth();
-        float bottom = nextY;
-        float top = nextY + player.getHeight();
 
-        int leftTile = (int) Math.floor(left);
-        int rightTile = (int) Math.floor(right - 0.001f);
-        int bottomTile = (int) Math.floor(bottom);
-        int topTile = (int) Math.floor(top - 0.001f);
-
-        return gameMap.isWalkable(leftTile, bottomTile)
-            && gameMap.isWalkable(rightTile, bottomTile)
-            && gameMap.isWalkable(leftTile, topTile)
-            && gameMap.isWalkable(rightTile, topTile);
-    }
 
 
 }

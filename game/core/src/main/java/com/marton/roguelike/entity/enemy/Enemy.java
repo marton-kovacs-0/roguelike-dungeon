@@ -3,6 +3,7 @@ package com.marton.roguelike.entity.enemy;
 import com.marton.roguelike.entity.Entity;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.world.GameMap;
+import static com.marton.roguelike.world.physics.CollisionHelper.canMoveTo;
 
 
 public abstract class Enemy extends Entity {
@@ -26,25 +27,39 @@ public abstract class Enemy extends Entity {
     }
 
     public void update(float deltaTime, Player player, GameMap gameMap) {
-        moveTowardsPlayer(player, deltaTime);
+        moveTowardsPlayer(player, deltaTime, gameMap);
     }
 
-    private void moveTowardsPlayer(Player player, float deltaTime) {
+    private void moveTowardsPlayer(Player player, float deltaTime, GameMap gameMap) {
         float moveSpeed = this.getMoveSpeed();
         float moveAmount = moveSpeed * deltaTime;
 
         if (distanceTo(player) <= PLAYER_DETECTION_RANGE) {
+
             if (player.getX() < this.getX()) {
-                move(-moveAmount, 0);
+                float nextX = this.getX() - moveAmount;
+                if (canMoveTo(nextX, this.getY(), this, gameMap)) {
+                    move(-moveAmount, 0);
+                }
             } else if (player.getX() > this.getX()) {
-                move( moveAmount, 0);
+                float nextX = this.getX() + moveAmount;
+                if (canMoveTo(nextX, this.getY(), this, gameMap)) {
+                    move(moveAmount, 0);
+                }
             }
 
             if (player.getY() < this.getY()) {
-                move(0, - moveAmount);
+                float nextY = this.getY() - moveAmount;
+                if (canMoveTo(this.getX(), nextY, this, gameMap)) {
+                    move(0, - moveAmount);
+                }
             } else if (player.getY() > this.getY()) {
-                move(0, moveAmount);
+                float nextY = this.getY() + moveAmount;
+                if (canMoveTo(this.getX(), nextY, this, gameMap)) {
+                    move(0, moveAmount);
+                }
             }
         }
     }
+
 }
