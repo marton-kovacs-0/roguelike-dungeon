@@ -56,9 +56,4 @@ public class RoomBasedMapGenerator implements MapGenerator{
     public List<Room> getRooms() {
         return roomGeneration.getRooms();
     }
-
-
-
-
-
 }
