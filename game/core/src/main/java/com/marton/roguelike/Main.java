@@ -94,6 +94,9 @@ public class Main extends ApplicationAdapter {
             cameraController.update(player.getX(), player.getY(), gameMap.getHeight());
         }
 
+        for (Enemy enemy : enemies) {
+            enemy.update(deltaTime, player, gameMap);
+        }
 
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);
