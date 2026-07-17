@@ -97,6 +97,7 @@ public class Main extends ApplicationAdapter {
         for (Enemy enemy : enemies) {
             enemy.update(deltaTime, player, gameMap);
         }
+        player.update(deltaTime);
 
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);

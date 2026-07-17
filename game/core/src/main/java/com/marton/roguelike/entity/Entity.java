@@ -9,6 +9,9 @@ public abstract class Entity {
     private static final float WIDTH = 0.8f;
     private static final float HEIGHT = 0.8f;
 
+    private float flashTimeRemaining = 0;
+    private static final float FLASH_TIME = 0.1f;
+
     private final int MAX_HEALTH;
     private int currentHealth;
 
@@ -47,6 +50,14 @@ public abstract class Entity {
         return HEIGHT;
     }
 
+    public void updateFlashTime(float deltaTime) {
+        flashTimeRemaining = Math.max(0, flashTimeRemaining - deltaTime);
+    }
+
+    public boolean isFlashing() {
+        return flashTimeRemaining > 0;
+    }
+
     public int getMaxHealth() {
         return MAX_HEALTH;
     }
@@ -57,6 +68,8 @@ public abstract class Entity {
 
     public void takeDamage(int dmg) {
         currentHealth -= dmg;
+        flashTimeRemaining = FLASH_TIME;
+
         if (currentHealth < 0) {
             currentHealth = 0;
         }
