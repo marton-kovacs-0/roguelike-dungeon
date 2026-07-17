@@ -19,7 +19,6 @@ public class Player extends Entity{
     }
 
     // Finds an enemy in range and damages it.
-    // The enemy also attacks the player if not dead.
     public void attack(List<Enemy> enemies) {
         Enemy enemyToAttack = findEnemyInRange(enemies);
 
@@ -28,10 +27,7 @@ public class Player extends Entity{
 
             if (enemyToAttack.isDead()) {
                 enemies.remove(enemyToAttack);
-                return;
             }
-
-            enemyToAttack.attack(this);
         }
     }
 

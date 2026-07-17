@@ -71,7 +71,7 @@ public class Main extends ApplicationAdapter {
 
         // Spawn player and enemies.
         Cell spawnPoint = gameMap.getRandomWalkableCell();
-        player = new Player(spawnPoint.getPosition().x(), spawnPoint.getPosition().y(), 100);
+        player = new Player(spawnPoint.getPosition().x(), spawnPoint.getPosition().y(), 1000);
         playerController = new PlayerController(player, gameMap);
         uiRenderer = new UiRenderer();
         enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
@@ -94,6 +94,9 @@ public class Main extends ApplicationAdapter {
             cameraController.update(player.getX(), player.getY(), gameMap.getHeight());
         }
 
+        for (Enemy enemy : enemies) {
+            enemy.update(deltaTime, player, gameMap);
+        }
 
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);
