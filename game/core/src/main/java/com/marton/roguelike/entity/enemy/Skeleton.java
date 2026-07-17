@@ -5,7 +5,7 @@ public class Skeleton extends Enemy {
     public Skeleton(float x, float y, int maxHealth) {
         super(x, y, maxHealth);
         this.attackDamage = 15;
-        this.attackRange = 1f;
+        this.attackRange = 1.5f;
     }
 
     @Override

@@ -7,7 +7,7 @@ public class Ghost extends Enemy {
     public Ghost(float x, float y, int maxHealth) {
         super(x, y, maxHealth);
         this.attackDamage = 10;
-        this.attackRange = 2f;
+        this.attackRange = 1.5f;
     }
 
     @Override
