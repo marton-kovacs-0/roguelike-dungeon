@@ -1,5 +1,6 @@
 package com.marton.roguelike.render;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -43,7 +44,8 @@ public class EntityRenderer {
         drawEntity(
             entityTileAtlas.getRegion(EntityType.PLAYER),
             player.getX(),
-            toRenderY(player.getY(), mapHeight)
+            toRenderY(player.getY(), mapHeight),
+            player.isFlashing()
         );
     }
 
@@ -52,12 +54,18 @@ public class EntityRenderer {
         for (Enemy enemy : enemies) {
             drawEntity(
                 entityTileAtlas.getRegion(enemy.getEntityType()),
-                enemy.getX(), toRenderY(enemy.getY(), mapHeight));
+                enemy.getX(), toRenderY(enemy.getY(), mapHeight), enemy.isFlashing());
             drawEnemyHealth(enemy, mapHeight);
         }
     }
 
-    private void drawEntity(TextureRegion region, float x, float y) {
+    private void drawEntity(TextureRegion region, float x, float y, boolean isFlashing) {
+        if (isFlashing) {
+            batch.setColor(Color.RED);
+        } else {
+            batch.setColor(Color.WHITE);
+        }
+
         batch.draw(
             region,
             x * RENDER_TILE_SIZE,
@@ -65,6 +73,8 @@ public class EntityRenderer {
             RENDER_TILE_SIZE,
             RENDER_TILE_SIZE
         );
+
+        batch.setColor(Color.WHITE);
     }
 
     private void drawEnemyHealth(Enemy enemy, int mapHeight) {

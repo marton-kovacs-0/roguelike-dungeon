@@ -36,6 +36,7 @@ public abstract class Enemy extends Entity {
      */
     public void update(float deltaTime, Player player, GameMap gameMap) {
         updateAttackCooldown(deltaTime);
+        updateFlashTime(deltaTime);
 
         if (updateKnockback(deltaTime, gameMap)) {
             return;

@@ -18,6 +18,10 @@ public class Player extends Entity{
         return EntityType.PLAYER;
     }
 
+    public void update(float deltaTime) {
+        updateFlashTime(deltaTime);
+    }
+
     // Finds an enemy in range and damages it.
     public void attack(List<Enemy> enemies) {
         Enemy enemyToAttack = findEnemyInRange(enemies);
