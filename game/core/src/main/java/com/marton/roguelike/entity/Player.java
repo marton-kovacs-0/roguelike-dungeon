@@ -24,11 +24,14 @@ public class Player extends Entity{
 
         if (enemyToAttack != null) {
             enemyToAttack.takeDamage(attackDamage);
+            enemyToAttack.knockback(this);
 
             if (enemyToAttack.isDead()) {
                 enemies.remove(enemyToAttack);
             }
         }
+
+
     }
 
     private Enemy findEnemyInRange(List<Enemy> enemies) {
