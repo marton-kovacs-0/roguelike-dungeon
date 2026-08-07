@@ -8,14 +8,16 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.input.PlayerController;
-import com.marton.roguelike.render.CameraController;
-import com.marton.roguelike.render.EntityRenderer;
-import com.marton.roguelike.render.MapRenderer;
-import com.marton.roguelike.render.UiRenderer;
+
+import com.marton.roguelike.item.ItemType;
+import com.marton.roguelike.item.SimpleItem;
+import com.marton.roguelike.item.WorldItem;
+import com.marton.roguelike.render.*;
 import com.marton.roguelike.render.atlas.EntityTileAtlas;
+import com.marton.roguelike.render.atlas.ItemTileAtlas;
 import com.marton.roguelike.render.atlas.MapTileAtlas;
 import com.marton.roguelike.world.*;
-import com.marton.roguelike.world.generation.MapGenerator;
+
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 import com.marton.roguelike.world.generation.enemy.EnemySpawner;
 
@@ -27,11 +29,15 @@ public class Main extends ApplicationAdapter {
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
     private UiRenderer uiRenderer;
+    private ItemRenderer itemRenderer;
+
     private EnemySpawner enemySpawner;
     private RoomBasedMapGenerator mapGenerator;
     private GameMap gameMap;
+
     private MapTileAtlas mapTileAtlas;
     private EntityTileAtlas entityTileAtlas;
+    private ItemTileAtlas itemTileAtlas;
 
     private OrthographicCamera camera;
     private CameraController cameraController;
@@ -47,6 +53,7 @@ public class Main extends ApplicationAdapter {
     public void create() {
         mapTileAtlas = new MapTileAtlas();
         entityTileAtlas = new EntityTileAtlas();
+        itemTileAtlas = new ItemTileAtlas();
         enemySpawner = new EnemySpawner();
 
         this.camera = new OrthographicCamera();
@@ -68,6 +75,7 @@ public class Main extends ApplicationAdapter {
         }
 
         entityRenderer = new EntityRenderer(entityTileAtlas);
+        itemRenderer = new ItemRenderer(itemTileAtlas);
 
         // Spawn player and enemies.
         Cell spawnPoint = gameMap.getRandomWalkableCell();
@@ -75,6 +83,8 @@ public class Main extends ApplicationAdapter {
         playerController = new PlayerController(player, gameMap);
         uiRenderer = new UiRenderer();
         enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
+
+        gameMap.addWorldItem(new WorldItem(new SimpleItem(1, ItemType.GOLD), new TilePosition(10, 10)));
 
     }
 
@@ -102,6 +112,7 @@ public class Main extends ApplicationAdapter {
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);
         uiRenderer.render(player);
+        itemRenderer.render(gameMap, camera);
     }
 
     @Override
@@ -110,6 +121,8 @@ public class Main extends ApplicationAdapter {
         entityRenderer.dispose();
         mapTileAtlas.dispose();
         entityTileAtlas.dispose();
+        itemTileAtlas.dispose();
         uiRenderer.dispose();
+        itemRenderer.dispose();
     }
 }

@@ -1,5 +1,7 @@
 package com.marton.roguelike.world;
 
+import com.marton.roguelike.item.WorldItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,11 +10,13 @@ public class GameMap {
     private final int width;
     private final int height;
     private final Cell[][] cells;
+    private final List<WorldItem> worldItems;
 
     public GameMap(int width, int height) {
         this.width = width;
         this.height = height;
         this.cells = new Cell[width][height];
+        this.worldItems = new ArrayList<>();
     }
 
     // ---------------------------------------------------------------------
@@ -33,6 +37,18 @@ public class GameMap {
 
     public boolean isWalkable(TilePosition position) {
         return isWalkable(position.x(), position.y());
+    }
+
+    public List<WorldItem> getWorldItems() {
+        return List.copyOf(worldItems);
+    }
+
+    public void addWorldItem(WorldItem item) {
+        worldItems.add(item);
+    }
+
+    public void removeWorldItem(WorldItem item) {
+        worldItems.remove(item);
     }
 
     // ---------------------------------------------------------------------
