@@ -1,0 +1,90 @@
+package com.marton.roguelike.entity;
+
+import com.marton.roguelike.world.EntityType;
+
+public abstract class Entity {
+    private float x;
+    private float y;
+    private static final float MOVE_SPEED = 6f;
+    private static final float WIDTH = 0.8f;
+    private static final float HEIGHT = 0.8f;
+
+    private float flashTimeRemaining = 0;
+    private static final float FLASH_TIME = 0.1f;
+
+    private final int MAX_HEALTH;
+    private int currentHealth;
+
+    public Entity(float x, float y, int maxHealth) {
+        if (x < 0) throw new IllegalArgumentException("Invalid x coordinate");
+        if (y < 0) throw new IllegalArgumentException("Invalid y coordinate");
+
+        this.x = x;
+        this.y = y;
+        this.MAX_HEALTH = maxHealth;
+        this.currentHealth = maxHealth;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void move(float dx, float dy) {
+        x += dx;
+        y += dy;
+    }
+
+    public float getMoveSpeed() {
+        return MOVE_SPEED;
+    }
+
+    public float getWidth() {
+        return WIDTH;
+    }
+
+    public float getHeight() {
+        return HEIGHT;
+    }
+
+    public void updateFlashTime(float deltaTime) {
+        flashTimeRemaining = Math.max(0, flashTimeRemaining - deltaTime);
+    }
+
+    public boolean isFlashing() {
+        return flashTimeRemaining > 0;
+    }
+
+    public int getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void takeDamage(int dmg) {
+        currentHealth -= dmg;
+        flashTimeRemaining = FLASH_TIME;
+
+        if (currentHealth < 0) {
+            currentHealth = 0;
+        }
+    }
+
+    public boolean isDead() {
+        return currentHealth <= 0;
+    }
+
+    // Returns the distance between this entity and another entity.
+    public float distanceTo(Entity other) {
+        float dx = other.getX() - this.getX();
+        float dy = other.getY() - this.getY();
+        return (float) Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public abstract EntityType getEntityType();
+}
