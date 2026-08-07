@@ -37,4 +37,8 @@ public class ItemTileAtlas {
             TILE_SIZE
         );
     }
+
+    public void dispose() {
+        tileSheet.dispose();
+    }
 }
