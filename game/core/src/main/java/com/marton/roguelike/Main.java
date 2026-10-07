@@ -20,6 +20,7 @@ import com.marton.roguelike.world.*;
 
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 import com.marton.roguelike.world.generation.enemy.EnemySpawner;
+import com.marton.roguelike.world.generation.item.ItemSpawner;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class Main extends ApplicationAdapter {
     private ItemRenderer itemRenderer;
 
     private EnemySpawner enemySpawner;
+    private ItemSpawner itemSpawner;
     private RoomBasedMapGenerator mapGenerator;
     private GameMap gameMap;
 
@@ -55,6 +57,7 @@ public class Main extends ApplicationAdapter {
         entityTileAtlas = new EntityTileAtlas();
         itemTileAtlas = new ItemTileAtlas();
         enemySpawner = new EnemySpawner();
+        itemSpawner = new ItemSpawner();
 
         this.camera = new OrthographicCamera();
         camera.setToOrtho(
@@ -83,6 +86,9 @@ public class Main extends ApplicationAdapter {
         playerController = new PlayerController(player, gameMap);
         uiRenderer = new UiRenderer();
         enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
+
+        // Spawn items
+        itemSpawner.spawnItems(gameMap);
 
         gameMap.addWorldItem(new WorldItem(new SimpleItem(1, ItemType.GOLD), new TilePosition(10, 10)));
 
