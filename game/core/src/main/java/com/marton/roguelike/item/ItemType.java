@@ -2,8 +2,9 @@ package com.marton.roguelike.item;
 
 public enum ItemType {
     SWORD(ItemCategory.WEAPON, "Iron Sword", "Just a regular iron sword", false, 1),
-    GOLD(ItemCategory.MATERIAL, "Gold", "Currency", true, 9999),
-    HEALTH_POTION(ItemCategory.CONSUMABLE,"Health Potion", "restores health", true, 10);
+    GOLD(ItemCategory.CURRENCY, "Gold", "Currency", false, 0),
+    HEALTH_POTION(ItemCategory.CONSUMABLE,"Health Potion", "restores health", true, 10),
+    KEY(ItemCategory.QUEST_ITEM, "Key", "Key for the next floor", false, 1);
 
     private final ItemCategory itemCategory;
     private final String displayName;

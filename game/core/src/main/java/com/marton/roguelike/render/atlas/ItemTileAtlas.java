@@ -12,12 +12,14 @@ public class ItemTileAtlas {
     private final TextureRegion sword;
     private final TextureRegion gold;
     private final TextureRegion healthPotion;
+    private final TextureRegion levelKey;
 
     public ItemTileAtlas() {
         this.tileSheet = new Texture("textures/tiles.png");
         this.sword = getSpecificTile(0, 29);
         this.gold = getSpecificTile(22 ,4);
         this.healthPotion = getSpecificTile(17, 25);
+        this.levelKey = getSpecificTile(16, 23);
     }
 
     public TextureRegion getRegion(ItemType itemType) {
@@ -25,6 +27,7 @@ public class ItemTileAtlas {
             case SWORD -> sword;
             case GOLD -> gold;
             case HEALTH_POTION -> healthPotion;
+            case KEY -> levelKey;
         };
     }
 
