@@ -78,6 +78,24 @@ public class GameMap {
             .isWalkable();
     }
 
+    // Returns the closest world item within the specified pickup range, or null if none is found.
+    public WorldItem getClosestWorldItem(float x, float y, float pickupRange) {
+        WorldItem result = null;
+        float closestDistance = pickupRange;
+        for (WorldItem item : worldItems) {
+            float dx = item.getPosition().x() + 0.5f - x;
+            float dy = item.getPosition().y() + 0.5f - y;
+            float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                result = item;
+            }
+        }
+
+        return result;
+    }
+
     // ---------------------------------------------------------------------
     // Map properties
     // ---------------------------------------------------------------------
