@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
+import com.marton.roguelike.item.WorldItem;
 import com.marton.roguelike.world.GameMap;
 import static com.marton.roguelike.world.physics.CollisionHelper.canMoveTo;
 
@@ -11,6 +12,8 @@ import java.util.List;
 
 public class PlayerController {
     private final Player player;
+    private static final float PICKUP_RANGE = 1.5f;
+
     private final GameMap gameMap;
 
     public PlayerController(Player player, GameMap gameMap) {
@@ -56,6 +59,29 @@ public class PlayerController {
     public void attack(List<Enemy> enemies) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             player.attack(enemies);
+        }
+    }
+
+    public void pickUpItem() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            float playerCenterX = player.getX() + player.getWidth() / 2f;
+            float playerCenterY = player.getY() + player.getHeight() / 2f;
+
+            WorldItem worldItem = gameMap.getClosestWorldItem(
+                playerCenterX,
+                playerCenterY,
+                PICKUP_RANGE
+            );
+
+            if (worldItem == null) {
+                return;
+            }
+
+            boolean itemAdded = player.addItemToInventory(worldItem.getItem());
+
+            if (itemAdded) {
+                gameMap.removeWorldItem(worldItem);
+            }
         }
     }
 

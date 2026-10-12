@@ -1,16 +1,22 @@
 package com.marton.roguelike.entity;
 
 import com.marton.roguelike.entity.enemy.Enemy;
+import com.marton.roguelike.item.Item;
+import com.marton.roguelike.item.SimpleItem;
 import com.marton.roguelike.world.EntityType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Entity{
     private static final float ATTACK_RANGE = 1.5f;
     private int attackDamage = 30;
+    private List<Item> inventory = new ArrayList<>();
+    private int inventoryCapacity = 10;
 
     public Player(float x, float y, int maxHealth) {
         super(x, y, maxHealth);
+
     }
 
     @Override
@@ -49,5 +55,15 @@ public class Player extends Entity{
             }
         }
         return null;
+    }
+
+    public boolean addItemToInventory(Item item) {
+        if (inventory.size() < inventoryCapacity) {
+            inventory.add(item);
+            System.out.println(item.getName() + " was added to inventory");
+            return true;
+        }
+
+        return false;
     }
 }

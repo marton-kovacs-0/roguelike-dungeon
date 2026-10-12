@@ -1,64 +1,81 @@
 package com.marton.roguelike;
 
 import com.badlogic.gdx.ApplicationAdapter;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.input.PlayerController;
-
 import com.marton.roguelike.item.ItemType;
 import com.marton.roguelike.item.SimpleItem;
 import com.marton.roguelike.item.WorldItem;
-import com.marton.roguelike.render.*;
+import com.marton.roguelike.render.CameraController;
+import com.marton.roguelike.render.EntityRenderer;
+import com.marton.roguelike.render.ItemRenderer;
+import com.marton.roguelike.render.MapRenderer;
+import com.marton.roguelike.render.UiRenderer;
 import com.marton.roguelike.render.atlas.EntityTileAtlas;
 import com.marton.roguelike.render.atlas.ItemTileAtlas;
 import com.marton.roguelike.render.atlas.MapTileAtlas;
-import com.marton.roguelike.world.*;
-
+import com.marton.roguelike.world.Cell;
+import com.marton.roguelike.world.GameMap;
+import com.marton.roguelike.world.TilePosition;
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 import com.marton.roguelike.world.generation.enemy.EnemySpawner;
 import com.marton.roguelike.world.generation.item.ItemSpawner;
 
 import java.util.List;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
+ */
 public class Main extends ApplicationAdapter {
 
+    // Renderers
     private MapRenderer mapRenderer;
     private EntityRenderer entityRenderer;
     private UiRenderer uiRenderer;
     private ItemRenderer itemRenderer;
 
+    // Generators and spawners
+    private RoomBasedMapGenerator mapGenerator;
     private EnemySpawner enemySpawner;
     private ItemSpawner itemSpawner;
-    private RoomBasedMapGenerator mapGenerator;
-    private GameMap gameMap;
 
+    // Map and entities
+    private GameMap gameMap;
+    private Player player;
+    private List<Enemy> enemies;
+
+    // Controllers
+    private PlayerController playerController;
+    private CameraController cameraController;
+
+    // Tile atlases
     private MapTileAtlas mapTileAtlas;
     private EntityTileAtlas entityTileAtlas;
     private ItemTileAtlas itemTileAtlas;
 
+    // Camera
     private OrthographicCamera camera;
-    private CameraController cameraController;
 
-    private Player player;
-    private List<Enemy> enemies;
-    private PlayerController playerController;
-
+    // Game state
     private boolean gameOver = false;
-
 
     @Override
     public void create() {
+
+        // Initialize atlases
         mapTileAtlas = new MapTileAtlas();
         entityTileAtlas = new EntityTileAtlas();
         itemTileAtlas = new ItemTileAtlas();
+
+        // Initialize generators and spawners
         enemySpawner = new EnemySpawner();
         itemSpawner = new ItemSpawner();
 
+        // Initialize camera
         this.camera = new OrthographicCamera();
         camera.setToOrtho(
             false,
@@ -69,34 +86,41 @@ public class Main extends ApplicationAdapter {
         cameraController = new CameraController(camera);
         Gdx.input.setInputProcessor(cameraController);
 
+        // Initialize map renderer and generator
         mapRenderer = new MapRenderer(mapTileAtlas);
         mapGenerator = new RoomBasedMapGenerator();
+
         try {
             gameMap = mapGenerator.generate(100, 100);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+        // Initialize entity and item renderers
         entityRenderer = new EntityRenderer(entityTileAtlas);
         itemRenderer = new ItemRenderer(itemTileAtlas);
 
-        // Spawn player and enemies.
+        // Spawn player and enemies
         Cell spawnPoint = gameMap.getRandomWalkableCell();
-        player = new Player(spawnPoint.getPosition().x(), spawnPoint.getPosition().y(), 1000);
+        player = new Player(
+            spawnPoint.getPosition().x(),
+            spawnPoint.getPosition().y(),
+            1000
+        );
+
         playerController = new PlayerController(player, gameMap);
         uiRenderer = new UiRenderer();
         enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
 
         // Spawn items
         itemSpawner.spawnItems(gameMap);
-
-        gameMap.addWorldItem(new WorldItem(new SimpleItem(1, ItemType.GOLD), new TilePosition(10, 10)));
-
     }
 
     @Override
     public void render() {
+
         float deltaTime = Gdx.graphics.getDeltaTime();
+
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
         if (player.isDead() && !gameOver) {
@@ -107,12 +131,18 @@ public class Main extends ApplicationAdapter {
         if (!gameOver) {
             playerController.movePlayer(deltaTime);
             playerController.attack(enemies);
-            cameraController.update(player.getX(), player.getY(), gameMap.getHeight());
+            playerController.pickUpItem();
+            cameraController.update(
+                player.getX(),
+                player.getY(),
+                gameMap.getHeight()
+            );
         }
 
         for (Enemy enemy : enemies) {
             enemy.update(deltaTime, player, gameMap);
         }
+
         player.update(deltaTime);
 
         mapRenderer.render(gameMap, camera);
@@ -123,6 +153,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
+
         mapRenderer.dispose();
         entityRenderer.dispose();
         mapTileAtlas.dispose();
