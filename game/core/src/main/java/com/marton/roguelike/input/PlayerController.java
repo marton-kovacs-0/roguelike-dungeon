@@ -2,11 +2,14 @@ package com.marton.roguelike.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.marton.roguelike.render.UiRenderer;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.item.Item;
 import com.marton.roguelike.item.ItemType;
-import com.marton.roguelike.item.SimpleItem;
+import com.marton.roguelike.world.MapCellType;
+import com.marton.roguelike.world.Cell;
+
 import com.marton.roguelike.item.WorldItem;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
@@ -18,6 +21,7 @@ import java.util.List;
 public class PlayerController {
     private final Player player;
     private static final float PICKUP_RANGE = 1.5f;
+    private static final float INTERACTION_RANGE = 1.5f;
     private boolean inventoryOpen = false;
 
     private final GameMap gameMap;
@@ -68,26 +72,92 @@ public class PlayerController {
         }
     }
 
+    public void handleInteraction(UiRenderer uiRenderer) {
+        if (!Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            return;
+        }
+
+        if (tryOpenNearbyDoor(uiRenderer)) {
+            return;
+        }
+
+        pickUpItem();
+    }
+
+    private boolean tryOpenNearbyDoor(UiRenderer uiRenderer) {
+        float playerCenterX = player.getX() + player.getWidth() / 2f;
+        float playerCenterY = player.getY() + player.getHeight() / 2f;
+
+        int centerX = (int) Math.floor(playerCenterX);
+        int centerY = (int) Math.floor(playerCenterY);
+
+        int searchRadius = (int) Math.ceil(INTERACTION_RANGE) + 1;
+
+        for (int x = centerX - searchRadius; x <= centerX + searchRadius; x++) {
+            for (int y = centerY - searchRadius; y <= centerY + searchRadius; y++) {
+                TilePosition position = new TilePosition(x, y);
+
+                if (!gameMap.isInsideMap(position)) {
+                    continue;
+                }
+
+                if (gameMap.getCell(position).getCellType() != MapCellType.CLOSED_DOOR) {
+                    continue;
+                }
+
+                float doorCenterX = x + 0.5f;
+                float doorCenterY = y + 0.5f;
+
+                float distance = (float) Math.sqrt(
+                    Math.pow(playerCenterX - doorCenterX, 2)
+                        + Math.pow(playerCenterY - doorCenterY, 2)
+                );
+
+                if (distance > INTERACTION_RANGE) {
+                    continue;
+                }
+
+                Item key = player.getInventory().stream()
+                    .filter(item -> item.getItemType() == ItemType.KEY)
+                    .findFirst()
+                    .orElse(null);
+
+                if (key == null) {
+                    uiRenderer.showNotification("You need a key to open this door.");
+                    return true;
+                }
+
+                if (player.removeItemFromInventory(key)) {
+                    // Unlock the exit
+                    gameMap.setCell(position, new Cell(position, MapCellType.FLOOR));
+                    uiRenderer.showNotification("The door is unlocked!");
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void pickUpItem() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            float playerCenterX = player.getX() + player.getWidth() / 2f;
-            float playerCenterY = player.getY() + player.getHeight() / 2f;
+        float playerCenterX = player.getX() + player.getWidth() / 2f;
+        float playerCenterY = player.getY() + player.getHeight() / 2f;
 
-            WorldItem worldItem = gameMap.getClosestWorldItem(
-                playerCenterX,
-                playerCenterY,
-                PICKUP_RANGE
-            );
+        WorldItem worldItem = gameMap.getClosestWorldItem(
+            playerCenterX,
+            playerCenterY,
+            PICKUP_RANGE
+        );
 
-            if (worldItem == null) {
-                return;
-            }
+        if (worldItem == null) {
+            return;
+        }
 
-            boolean itemAdded = player.addItemToInventory(worldItem.getItem());
+        boolean itemAdded = player.addItemToInventory(worldItem.getItem());
 
-            if (itemAdded) {
-                gameMap.removeWorldItem(worldItem);
-            }
+        if (itemAdded) {
+            gameMap.removeWorldItem(worldItem);
         }
     }
 

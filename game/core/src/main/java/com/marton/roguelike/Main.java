@@ -129,7 +129,7 @@ public class Main extends ApplicationAdapter {
         if (!gameOver) {
             playerController.movePlayer(deltaTime);
             playerController.attack(enemies);
-            playerController.pickUpItem();
+            playerController.handleInteraction(uiRenderer);
             playerController.toggleInventory();
             cameraController.update(
                 player.getX(),
@@ -149,7 +149,7 @@ public class Main extends ApplicationAdapter {
 
         // Handle inventory UI and drop/delete
         boolean inventoryOpen = playerController.isInventoryOpen();
-        uiRenderer.render(player, inventoryOpen);
+        uiRenderer.render(player, inventoryOpen, deltaTime);
 
         if (inventoryOpen) {
             uiRenderer.handleButtonClick(
