@@ -2,6 +2,7 @@ package com.marton.roguelike.entity;
 
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.item.Item;
+import com.marton.roguelike.item.ItemType;
 import com.marton.roguelike.item.SimpleItem;
 import com.marton.roguelike.world.EntityType;
 
@@ -65,5 +66,17 @@ public class Player extends Entity{
         }
 
         return false;
+    }
+
+    public List<Item> getInventory() {
+        return List.copyOf(inventory);
+    }
+
+    public boolean removeItemFromInventory(Item item) {
+        if (item == null) {
+            return false;
+        }
+
+        return inventory.remove(item);
     }
 }

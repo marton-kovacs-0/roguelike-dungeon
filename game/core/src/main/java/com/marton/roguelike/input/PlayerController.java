@@ -4,8 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
+import com.marton.roguelike.item.Item;
+import com.marton.roguelike.item.ItemType;
+import com.marton.roguelike.item.SimpleItem;
 import com.marton.roguelike.item.WorldItem;
 import com.marton.roguelike.world.GameMap;
+import com.marton.roguelike.world.TilePosition;
+
 import static com.marton.roguelike.world.physics.CollisionHelper.canMoveTo;
 
 import java.util.List;
@@ -13,6 +18,7 @@ import java.util.List;
 public class PlayerController {
     private final Player player;
     private static final float PICKUP_RANGE = 1.5f;
+    private boolean inventoryOpen = false;
 
     private final GameMap gameMap;
 
@@ -85,7 +91,46 @@ public class PlayerController {
         }
     }
 
+    public void deleteItemFromInventory(int index) {
+        List<Item> inventory = player.getInventory();
 
+        if (index >= inventory.size() || index < 0) {
+            return;
+        }
 
+        Item itemToDelete = inventory.get(index);
+        if (itemToDelete.getItemType() != ItemType.KEY) {
+            player.removeItemFromInventory(itemToDelete);
+        }
+    }
+
+    public void dropItemFromInventory(int index) {
+        List<Item> inventory = player.getInventory();
+
+        if (index >= inventory.size() || index < 0) {
+            return;
+        }
+
+        Item itemToDrop = inventory.get(index);
+        TilePosition currentPlayerPosition = new TilePosition(
+            (int) Math.floor(player.getX()),
+            (int) Math.floor(player.getY()));
+
+        if (player.removeItemFromInventory(itemToDrop)) {
+            WorldItem droppedItem = new WorldItem(itemToDrop, currentPlayerPosition);
+            gameMap.addWorldItem(droppedItem);
+        }
+
+    }
+
+    public void toggleInventory() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            inventoryOpen = !inventoryOpen;
+        }
+    }
+
+    public boolean isInventoryOpen() {
+        return inventoryOpen;
+    }
 
 }
