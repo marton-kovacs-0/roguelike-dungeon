@@ -7,9 +7,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.input.PlayerController;
-import com.marton.roguelike.item.ItemType;
-import com.marton.roguelike.item.SimpleItem;
-import com.marton.roguelike.item.WorldItem;
+
 import com.marton.roguelike.render.CameraController;
 import com.marton.roguelike.render.EntityRenderer;
 import com.marton.roguelike.render.ItemRenderer;
@@ -20,7 +18,7 @@ import com.marton.roguelike.render.atlas.ItemTileAtlas;
 import com.marton.roguelike.render.atlas.MapTileAtlas;
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.GameMap;
-import com.marton.roguelike.world.TilePosition;
+
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 import com.marton.roguelike.world.generation.enemy.EnemySpawner;
 import com.marton.roguelike.world.generation.item.ItemSpawner;
@@ -132,6 +130,7 @@ public class Main extends ApplicationAdapter {
             playerController.movePlayer(deltaTime);
             playerController.attack(enemies);
             playerController.pickUpItem();
+            playerController.toggleInventory();
             cameraController.update(
                 player.getX(),
                 player.getY(),
@@ -147,7 +146,18 @@ public class Main extends ApplicationAdapter {
 
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);
-        uiRenderer.render(player);
+
+        // Handle inventory UI and drop/delete
+        boolean inventoryOpen = playerController.isInventoryOpen();
+        uiRenderer.render(player, inventoryOpen);
+
+        if (inventoryOpen) {
+            uiRenderer.handleButtonClick(
+                player.getInventory(),
+                playerController
+            );
+        }
+
         itemRenderer.render(gameMap, camera);
     }
 
