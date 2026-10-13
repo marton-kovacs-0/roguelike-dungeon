@@ -22,6 +22,11 @@ public class UiRenderer {
     private final BitmapFont font;
     private final ShapeRenderer shapeRenderer;
 
+    private String notification = "";
+    private float notificationTimer = 0f;
+
+    private static final float NOTIFICATION_DURATION = 2f;
+
     // Inventory panel constants
     private static final float PANEL_X = 20;
     private static final float PANEL_Y = 50;
@@ -48,9 +53,28 @@ public class UiRenderer {
         );
     }
 
-    public void render(Player player, boolean inventoryOpen) {
+    public void render(Player player, boolean inventoryOpen, float deltaTime) {
+        if (notificationTimer > 0f) {
+            notificationTimer -= deltaTime;
+
+            if (notificationTimer <= 0f) {
+                notification = "";
+            }
+        }
+
         batch.begin();
+
         font.draw(batch, getHealthText(player), 20, 30);
+
+        if (!notification.isEmpty()) {
+            font.draw(
+                batch,
+                notification,
+                20,
+                Gdx.graphics.getHeight() - 30
+            );
+        }
+
         batch.end();
 
         if (inventoryOpen) {
@@ -197,6 +221,11 @@ public class UiRenderer {
         }
 
 
+    }
+
+    public void showNotification(String message) {
+        notification = message;
+        notificationTimer = NOTIFICATION_DURATION;
     }
 
     public void dispose() {

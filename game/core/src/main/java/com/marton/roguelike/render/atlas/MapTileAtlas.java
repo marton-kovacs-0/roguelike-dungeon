@@ -15,6 +15,7 @@ public class MapTileAtlas {
     private final TextureRegion wallTile;
     private final TextureRegion treeTile;
     private final TextureRegion closedChestTile;
+    private final TextureRegion closedDoorTile;
 
 
 
@@ -25,6 +26,7 @@ public class MapTileAtlas {
         wallTile = getSpecificTile(10, 17);
         treeTile = getSpecificTile(0,1);
         closedChestTile = getSpecificTile(8, 6);
+        closedDoorTile = getSpecificTile(10, 9);
     }
 
     public TextureRegion getRegion(MapCellType mapCellType) {
@@ -34,6 +36,7 @@ public class MapTileAtlas {
             case TREE: return treeTile;
             case EMPTY: return emptyTile;
             case CLOSED_CHEST: return closedChestTile;
+            case CLOSED_DOOR: return closedDoorTile;
         }
         throw new IllegalArgumentException("Invalid CellType.");
     }

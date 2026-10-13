@@ -38,6 +38,14 @@ public abstract class Entity {
         y += dy;
     }
 
+    public void setPosition(float x, float y) {
+        if (x < 0) throw new IllegalArgumentException("Invalid x coordinate");
+        if (y < 0) throw new IllegalArgumentException("Invalid y coordinate");
+
+        this.x = x;
+        this.y = y;
+    }
+
     public float getMoveSpeed() {
         return MOVE_SPEED;
     }
