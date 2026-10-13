@@ -72,16 +72,22 @@ public class PlayerController {
         }
     }
 
-    public void handleInteraction(UiRenderer uiRenderer) {
+
+    private boolean exitOpened = false;
+
+    public boolean handleInteraction(UiRenderer uiRenderer) {
         if (!Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            return;
+            return false;
         }
 
+        exitOpened = false;
+
         if (tryOpenNearbyDoor(uiRenderer)) {
-            return;
+            return exitOpened;
         }
 
         pickUpItem();
+        return false;
     }
 
     private boolean tryOpenNearbyDoor(UiRenderer uiRenderer) {
@@ -128,9 +134,9 @@ public class PlayerController {
                 }
 
                 if (player.removeItemFromInventory(key)) {
-                    // Unlock the exit
                     gameMap.setCell(position, new Cell(position, MapCellType.FLOOR));
                     uiRenderer.showNotification("The door is unlocked!");
+                    exitOpened = true;
                 }
 
                 return true;
@@ -139,6 +145,7 @@ public class PlayerController {
 
         return false;
     }
+
 
     public void pickUpItem() {
         float playerCenterX = player.getX() + player.getWidth() / 2f;

@@ -1,6 +1,5 @@
 package com.marton.roguelike.world.generation.item;
 
-import com.marton.roguelike.item.Item;
 import com.marton.roguelike.item.ItemType;
 import com.marton.roguelike.item.SimpleItem;
 import com.marton.roguelike.item.WorldItem;
@@ -34,7 +33,7 @@ public class ItemSpawner {
         spawnSpecificItem(gameMap, swords, ItemType.SWORD, occupiedPositions);
         spawnSpecificItem(gameMap, healthPotions, ItemType.HEALTH_POTION, occupiedPositions);
         spawnSpecificItem(gameMap, gold, ItemType.GOLD, occupiedPositions);
-        spawnSpecificItem(gameMap, 1, ItemType.KEY, occupiedPositions);
+        spawnSpecificItem(gameMap, NEXT_LEVEL_KEY, ItemType.KEY, occupiedPositions);
 
     }
 

@@ -2,8 +2,6 @@ package com.marton.roguelike.entity;
 
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.item.Item;
-import com.marton.roguelike.item.ItemType;
-import com.marton.roguelike.item.SimpleItem;
 import com.marton.roguelike.world.EntityType;
 
 import java.util.ArrayList;

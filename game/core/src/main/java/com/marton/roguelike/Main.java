@@ -8,11 +8,7 @@ import com.marton.roguelike.entity.Player;
 import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.input.PlayerController;
 
-import com.marton.roguelike.render.CameraController;
-import com.marton.roguelike.render.EntityRenderer;
-import com.marton.roguelike.render.ItemRenderer;
-import com.marton.roguelike.render.MapRenderer;
-import com.marton.roguelike.render.UiRenderer;
+import com.marton.roguelike.render.*;
 import com.marton.roguelike.render.atlas.EntityTileAtlas;
 import com.marton.roguelike.render.atlas.ItemTileAtlas;
 import com.marton.roguelike.render.atlas.MapTileAtlas;
@@ -35,6 +31,7 @@ public class Main extends ApplicationAdapter {
     private EntityRenderer entityRenderer;
     private UiRenderer uiRenderer;
     private ItemRenderer itemRenderer;
+    private ScreenTransition screenTransition;
 
     // Generators and spawners
     private RoomBasedMapGenerator mapGenerator;
@@ -84,6 +81,8 @@ public class Main extends ApplicationAdapter {
         cameraController = new CameraController(camera);
         Gdx.input.setInputProcessor(cameraController);
 
+        screenTransition = new ScreenTransition();
+
         // Initialize map renderer and generator
         mapRenderer = new MapRenderer(mapTileAtlas);
         mapGenerator = new RoomBasedMapGenerator();
@@ -116,21 +115,35 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+
+        // Update the screen transition.
+        screenTransition.update(deltaTime);
+
+        // Change the dungeon only after the screen is fully black.
+        if (screenTransition.isWaitingForLevelChange()) {
+            changeLevel();
+            screenTransition.startFadeIn();
+        }
 
         if (player.isDead() && !gameOver) {
             gameOver = true;
             System.out.println("GAME OVER");
         }
 
-        if (!gameOver) {
+        // Freeze gameplay while the transition is active.
+        if (!gameOver && !screenTransition.isActive()) {
             playerController.movePlayer(deltaTime);
             playerController.attack(enemies);
-            playerController.handleInteraction(uiRenderer);
+
+            if (playerController.handleInteraction(uiRenderer)) {
+                screenTransition.start();
+            }
+
             playerController.toggleInventory();
+
             cameraController.update(
                 player.getX(),
                 player.getY(),
@@ -138,20 +151,23 @@ public class Main extends ApplicationAdapter {
             );
         }
 
-        for (Enemy enemy : enemies) {
-            enemy.update(deltaTime, player, gameMap);
-        }
+        // Enemies and player animations should also pause during transitions.
+        if (!screenTransition.isActive()) {
+            for (Enemy enemy : enemies) {
+                enemy.update(deltaTime, player, gameMap);
+            }
 
-        player.update(deltaTime);
+            player.update(deltaTime);
+        }
 
         mapRenderer.render(gameMap, camera);
         entityRenderer.render(gameMap, player, enemies, camera);
 
-        // Handle inventory UI and drop/delete
+        // Handle inventory UI and drop/delete.
         boolean inventoryOpen = playerController.isInventoryOpen();
         uiRenderer.render(player, inventoryOpen, deltaTime);
 
-        if (inventoryOpen) {
+        if (inventoryOpen && !screenTransition.isActive()) {
             uiRenderer.handleButtonClick(
                 player.getInventory(),
                 playerController
@@ -159,6 +175,9 @@ public class Main extends ApplicationAdapter {
         }
 
         itemRenderer.render(gameMap, camera);
+
+        // Draw the transition overlay last so it covers the entire scene.
+        screenTransition.render();
     }
 
     @Override
@@ -171,5 +190,39 @@ public class Main extends ApplicationAdapter {
         itemTileAtlas.dispose();
         uiRenderer.dispose();
         itemRenderer.dispose();
+        screenTransition.dispose();
     }
+
+
+    private void changeLevel() {
+        // Generate a completely new dungeon.
+        gameMap = mapGenerator.generate(100, 100);
+
+        // Populate the new dungeon.
+        enemies = enemySpawner.spawnEnemies(
+            gameMap,
+            mapGenerator.getRooms()
+        );
+        itemSpawner.spawnItems(gameMap);
+
+        // Move the existing player to the new dungeon.
+        Cell spawnPoint = gameMap.getRandomWalkableCell();
+        player.setPosition(
+            spawnPoint.getPosition().x(),
+            spawnPoint.getPosition().y()
+        );
+
+        // The old controller references the previous map.
+        playerController = new PlayerController(player, gameMap);
+
+        // Center the camera on the new player position immediately.
+        cameraController.update(
+            player.getX(),
+            player.getY(),
+            gameMap.getHeight()
+        );
+
+        uiRenderer.showNotification("You entered a new dungeon!");
+    }
+
 }
