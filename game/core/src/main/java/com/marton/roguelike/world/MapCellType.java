@@ -5,7 +5,8 @@ public enum MapCellType {
     WALL("wall", false),
     FLOOR("floor", true),
     TREE("tree", false),
-    CLOSED_CHEST("closedChest", false);
+    CLOSED_CHEST("closedChest", false),
+    CLOSED_DOOR("closedDoor", false);
 
     private final String tileName;
     private final boolean walkable;
