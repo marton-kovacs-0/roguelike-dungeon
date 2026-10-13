@@ -44,19 +44,17 @@ Explore procedurally generated dungeons, fight enemies, collect items, manage yo
 
 **Required JDK 21**
 
-Clone the repository and run the desktop application from the `game/` directory.
+Run the following commands from the repository root.
 
 **Windows**
 ```powershell
-git clone <YOUR_REPOSITORY_URL>
-cd roguelike-dungeon\game
+cd game
 .\gradlew.bat lwjgl3:run
 ```
 
 **Linux / macOS**
 ```bash
-git clone <YOUR_REPOSITORY_URL>
-cd roguelike-dungeon/game
+cd game
 ./gradlew lwjgl3:run
 ```
 
