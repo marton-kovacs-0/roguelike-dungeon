@@ -31,8 +31,8 @@ public class RoomGeneration {
         int roomWidth = random.nextInt(ROOM_MIN_WIDTH, ROOM_MAX_WIDTH);
         int roomHeight = random.nextInt(ROOM_MIN_HEIGHT, ROOM_MAX_HEIGHT);
 
-        int roomX = random.nextInt(gameMap.getWidth() - roomWidth) + 1;
-        int roomY = random.nextInt(gameMap.getHeight() - roomHeight) + 1;
+        int roomX = random.nextInt(gameMap.getWidth() - roomWidth - 1) + 1;
+        int roomY = random.nextInt(gameMap.getHeight() - roomHeight - 1) + 1;
 
         Room room = new Room(new TilePosition(roomX, roomY), roomWidth, roomHeight);
 

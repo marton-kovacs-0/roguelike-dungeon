@@ -63,6 +63,7 @@ public class Main extends ApplicationAdapter {
     // FOV
     private VisibilityMap visibilityMap;
     private FieldOfView fieldOfView;
+    private boolean debugMapVisible = false;
 
     @Override
     public void create() {
@@ -85,7 +86,9 @@ public class Main extends ApplicationAdapter {
             Gdx.graphics.getHeight()
         );
 
-        cameraController = new CameraController(camera);
+        cameraController = new CameraController(
+            camera,
+            () -> debugMapVisible = !debugMapVisible);
         Gdx.input.setInputProcessor(cameraController);
 
         screenTransition = new ScreenTransition();
@@ -176,7 +179,7 @@ public class Main extends ApplicationAdapter {
         // updates field of view when the player moves
         fieldOfView.update();
 
-        mapRenderer.render(gameMap, camera);
+        mapRenderer.render(gameMap, camera, debugMapVisible);
         entityRenderer.render(gameMap, player, enemies, camera);
 
         // Handle inventory UI and drop/delete.

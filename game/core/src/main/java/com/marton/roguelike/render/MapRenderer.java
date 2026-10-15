@@ -35,21 +35,31 @@ public class MapRenderer {
         pixmap.dispose();
     }
 
-    public void render(GameMap gameMap,OrthographicCamera camera) {
+    public void render(
+        GameMap gameMap,
+        OrthographicCamera camera,
+        boolean debugMapVisible) {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        renderMap(gameMap);
+        renderMap(gameMap, debugMapVisible);
         batch.end();
     }
 
-    private void renderMap(GameMap gameMap) {
+    private void renderMap(GameMap gameMap, boolean debugMapVisible) {
         int width = gameMap.getWidth();
         int height = gameMap.getHeight();
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Cell cell = gameMap.getCell(x, y);
+
+                // When debug mode is on, everything is rendered normally
+                if (debugMapVisible) {
+                    drawTile(mapTileAtlas.getRegion(cell.getCellType()), x, toRenderY(y, height));
+                    continue;
+                }
+
                 boolean visible = visibilityMap.isCellVisible(cell.getPosition());
                 boolean explored = visibilityMap.isCellExplored(cell.getPosition());
 
