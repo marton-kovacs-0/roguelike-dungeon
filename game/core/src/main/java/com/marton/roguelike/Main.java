@@ -20,6 +20,7 @@ import com.marton.roguelike.world.generation.enemy.EnemySpawner;
 import com.marton.roguelike.world.generation.item.ItemSpawner;
 import com.marton.roguelike.world.visibility.FieldOfView;
 import com.marton.roguelike.world.visibility.VisibilityMap;
+import com.marton.roguelike.world.visibility.VisibilityMask;
 
 import java.util.List;
 
@@ -63,6 +64,7 @@ public class Main extends ApplicationAdapter {
     // FOV
     private VisibilityMap visibilityMap;
     private FieldOfView fieldOfView;
+    private VisibilityMask visibilityMask;
     private boolean debugMapVisible = false;
 
     @Override
@@ -111,16 +113,21 @@ public class Main extends ApplicationAdapter {
         // Initialize player controller
         playerController = new PlayerController(player, gameMap);
 
-        // Initialize visibility and field of view
+        // Initialize visibility, field of view and mask
         visibilityMap = new VisibilityMap(
             gameMap.getWidth(),
             gameMap.getHeight()
         );
+
         fieldOfView = new FieldOfView(gameMap, visibilityMap, player);
         fieldOfView.update();
 
+        visibilityMask = new VisibilityMask(gameMap);
+        visibilityMask.update(player);
+
         // Initialize renderers
         mapRenderer = new MapRenderer(mapTileAtlas, visibilityMap);
+        mapRenderer.setVisibilityMask(visibilityMask);
         entityRenderer = new EntityRenderer(entityTileAtlas);
         itemRenderer = new ItemRenderer(itemTileAtlas);
         uiRenderer = new UiRenderer();
@@ -178,6 +185,7 @@ public class Main extends ApplicationAdapter {
         }
         // updates field of view when the player moves
         fieldOfView.update();
+        visibilityMask.update(player);
 
         mapRenderer.render(gameMap, camera, debugMapVisible);
         entityRenderer.render(gameMap, player, enemies, camera);
@@ -245,9 +253,12 @@ public class Main extends ApplicationAdapter {
             visibilityMap,
             player
         );
+        visibilityMask = new VisibilityMask(gameMap);
+        visibilityMask.update(player);
 
         // updates the renderer's visibility map
         mapRenderer.setVisibilityMap(visibilityMap);
+        mapRenderer.setVisibilityMask(visibilityMask);
 
         // Center the camera on the new player position immediately.
         cameraController.update(
