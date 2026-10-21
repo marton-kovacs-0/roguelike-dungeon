@@ -10,6 +10,8 @@ import com.marton.roguelike.entity.enemy.Enemy;
 import com.marton.roguelike.render.atlas.EntityTileAtlas;
 import com.marton.roguelike.world.EntityType;
 import com.marton.roguelike.world.GameMap;
+import com.marton.roguelike.world.TilePosition;
+import com.marton.roguelike.world.visibility.VisibilityMap;
 
 import static com.marton.roguelike.render.CoordinateUtils.toRenderY;
 import static com.marton.roguelike.render.RenderConstants.RENDER_TILE_SIZE;
@@ -21,22 +23,30 @@ public class EntityRenderer {
     private final EntityTileAtlas entityTileAtlas;
     private final SpriteBatch batch;
     private final BitmapFont font;
+    private VisibilityMap visibilityMap;
 
     private static final int HEALTH_TEXT_OFFSET_Y = 15;
     private static final int HEALTH_TEXT_OFFSET_X = 1;
 
-    public EntityRenderer(EntityTileAtlas entityTileAtlas) {
+    public EntityRenderer(EntityTileAtlas entityTileAtlas, VisibilityMap visibilityMap) {
         this.batch = new SpriteBatch();
         this.entityTileAtlas = entityTileAtlas;
         this.font = new BitmapFont();
+        this.visibilityMap = visibilityMap;
     }
 
-    public void render(GameMap gameMap, Player player, List<Enemy> enemies, OrthographicCamera camera) {
+    public void render(
+        GameMap gameMap,
+        Player player,
+        List<Enemy> enemies,
+        OrthographicCamera camera,
+        boolean debugMode
+    ) {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
         renderPlayer(player, gameMap.getHeight());
-        renderEnemies(enemies, gameMap.getHeight());
+        renderEnemies(enemies, gameMap.getHeight(), debugMode);
         batch.end();
     }
 
@@ -50,11 +60,22 @@ public class EntityRenderer {
     }
 
     // Renders all enemies currently present on the map.
-    private void renderEnemies(List<Enemy> enemies, int mapHeight) {
+    private void renderEnemies(List<Enemy> enemies, int mapHeight, boolean debugMode) {
         for (Enemy enemy : enemies) {
+            int tileX = (int) Math.floor(enemy.getX());
+            int tileY = (int) Math.floor(enemy.getY());
+
+            if (!debugMode && !visibilityMap.isCellVisible(new TilePosition(tileX, tileY))) {
+                continue;
+            }
+
             drawEntity(
                 entityTileAtlas.getRegion(enemy.getEntityType()),
-                enemy.getX(), toRenderY(enemy.getY(), mapHeight), enemy.isFlashing());
+                enemy.getX(),
+                toRenderY(enemy.getY(), mapHeight),
+                enemy.isFlashing()
+            );
+
             drawEnemyHealth(enemy, mapHeight);
         }
     }
@@ -88,6 +109,10 @@ public class EntityRenderer {
 
     private String getEnemyHealthText(Enemy enemy) {
         return enemy.getCurrentHealth() + "/" + enemy.getMaxHealth();
+    }
+
+    public void setVisibilityMap(VisibilityMap visibilityMap) {
+        this.visibilityMap = visibilityMap;
     }
 
     public void dispose() {

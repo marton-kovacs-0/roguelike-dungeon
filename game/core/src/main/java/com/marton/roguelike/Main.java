@@ -121,8 +121,8 @@ public class Main extends ApplicationAdapter {
 
         // Initialize renderers
         mapRenderer = new MapRenderer(mapTileAtlas, visibilityMap);
-        entityRenderer = new EntityRenderer(entityTileAtlas);
-        itemRenderer = new ItemRenderer(itemTileAtlas);
+        entityRenderer = new EntityRenderer(entityTileAtlas, visibilityMap);
+        itemRenderer = new ItemRenderer(itemTileAtlas, visibilityMap);
         uiRenderer = new UiRenderer();
 
         // Spawn enemies and items
@@ -180,7 +180,7 @@ public class Main extends ApplicationAdapter {
         fieldOfView.update();
 
         mapRenderer.render(gameMap, camera, debugMapVisible);
-        entityRenderer.render(gameMap, player, enemies, camera);
+        entityRenderer.render(gameMap, player, enemies, camera, debugMapVisible);
 
         // Handle inventory UI and drop/delete.
         boolean inventoryOpen = playerController.isInventoryOpen();
@@ -193,7 +193,7 @@ public class Main extends ApplicationAdapter {
             );
         }
 
-        itemRenderer.render(gameMap, camera);
+        itemRenderer.render(gameMap, camera, debugMapVisible);
 
         // Draw the transition overlay last so it covers the entire scene.
         screenTransition.render();
@@ -248,6 +248,8 @@ public class Main extends ApplicationAdapter {
 
         // updates the renderer's visibility map
         mapRenderer.setVisibilityMap(visibilityMap);
+        entityRenderer.setVisibilityMap(visibilityMap);
+        itemRenderer.setVisibilityMap(visibilityMap);
 
         // Center the camera on the new player position immediately.
         cameraController.update(
