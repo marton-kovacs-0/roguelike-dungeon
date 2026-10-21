@@ -2,6 +2,7 @@ package com.marton.roguelike.render;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.Input;
 import static com.marton.roguelike.render.CoordinateUtils.toRenderY;
 import static com.marton.roguelike.render.RenderConstants.RENDER_TILE_SIZE;
 
@@ -12,8 +13,11 @@ public class CameraController extends InputAdapter {
     private static final float MIN_ZOOM = 0.5f;
     private static final float MAX_ZOOM = 100f;
 
-    public CameraController(OrthographicCamera camera) {
+    private final Runnable onToggleDebugMap;
+
+    public CameraController(OrthographicCamera camera, Runnable onToggleDebugMap) {
         this.camera = camera;
+        this.onToggleDebugMap = onToggleDebugMap;
     }
 
     @Override
@@ -24,6 +28,16 @@ public class CameraController extends InputAdapter {
             Math.min(MAX_ZOOM, camera.zoom)
         );
         return true;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.F3) {
+            onToggleDebugMap.run();
+            return true;
+        }
+
+        return false;
     }
 
     public void update(float targetX, float targetY, int gameMapHeight) {

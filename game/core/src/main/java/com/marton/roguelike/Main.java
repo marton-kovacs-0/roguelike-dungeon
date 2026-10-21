@@ -18,6 +18,8 @@ import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 import com.marton.roguelike.world.generation.enemy.EnemySpawner;
 import com.marton.roguelike.world.generation.item.ItemSpawner;
+import com.marton.roguelike.world.visibility.FieldOfView;
+import com.marton.roguelike.world.visibility.VisibilityMap;
 
 import java.util.List;
 
@@ -58,6 +60,11 @@ public class Main extends ApplicationAdapter {
     // Game state
     private boolean gameOver = false;
 
+    // FOV
+    private VisibilityMap visibilityMap;
+    private FieldOfView fieldOfView;
+    private boolean debugMapVisible = false;
+
     @Override
     public void create() {
 
@@ -67,37 +74,33 @@ public class Main extends ApplicationAdapter {
         itemTileAtlas = new ItemTileAtlas();
 
         // Initialize generators and spawners
+        mapGenerator = new RoomBasedMapGenerator();
         enemySpawner = new EnemySpawner();
         itemSpawner = new ItemSpawner();
 
         // Initialize camera
-        this.camera = new OrthographicCamera();
+        camera = new OrthographicCamera();
         camera.setToOrtho(
             false,
             Gdx.graphics.getWidth(),
             Gdx.graphics.getHeight()
         );
 
-        cameraController = new CameraController(camera);
+        cameraController = new CameraController(
+            camera,
+            () -> debugMapVisible = !debugMapVisible);
         Gdx.input.setInputProcessor(cameraController);
 
         screenTransition = new ScreenTransition();
 
-        // Initialize map renderer and generator
-        mapRenderer = new MapRenderer(mapTileAtlas);
-        mapGenerator = new RoomBasedMapGenerator();
-
+        // Generate the initial dungeon
         try {
             gameMap = mapGenerator.generate(100, 100);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        // Initialize entity and item renderers
-        entityRenderer = new EntityRenderer(entityTileAtlas);
-        itemRenderer = new ItemRenderer(itemTileAtlas);
-
-        // Spawn player and enemies
+        // Spawn player
         Cell spawnPoint = gameMap.getRandomWalkableCell();
         player = new Player(
             spawnPoint.getPosition().x(),
@@ -105,11 +108,25 @@ public class Main extends ApplicationAdapter {
             1000
         );
 
+        // Initialize player controller
         playerController = new PlayerController(player, gameMap);
-        uiRenderer = new UiRenderer();
-        enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
 
-        // Spawn items
+        // Initialize visibility and field of view
+        visibilityMap = new VisibilityMap(
+            gameMap.getWidth(),
+            gameMap.getHeight()
+        );
+        fieldOfView = new FieldOfView(gameMap, visibilityMap, player);
+        fieldOfView.update();
+
+        // Initialize renderers
+        mapRenderer = new MapRenderer(mapTileAtlas, visibilityMap);
+        entityRenderer = new EntityRenderer(entityTileAtlas, visibilityMap);
+        itemRenderer = new ItemRenderer(itemTileAtlas, visibilityMap);
+        uiRenderer = new UiRenderer();
+
+        // Spawn enemies and items
+        enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
         itemSpawner.spawnItems(gameMap);
     }
 
@@ -159,9 +176,11 @@ public class Main extends ApplicationAdapter {
 
             player.update(deltaTime);
         }
+        // updates field of view when the player moves
+        fieldOfView.update();
 
-        mapRenderer.render(gameMap, camera);
-        entityRenderer.render(gameMap, player, enemies, camera);
+        mapRenderer.render(gameMap, camera, debugMapVisible);
+        entityRenderer.render(gameMap, player, enemies, camera, debugMapVisible);
 
         // Handle inventory UI and drop/delete.
         boolean inventoryOpen = playerController.isInventoryOpen();
@@ -174,7 +193,7 @@ public class Main extends ApplicationAdapter {
             );
         }
 
-        itemRenderer.render(gameMap, camera);
+        itemRenderer.render(gameMap, camera, debugMapVisible);
 
         // Draw the transition overlay last so it covers the entire scene.
         screenTransition.render();
@@ -215,12 +234,30 @@ public class Main extends ApplicationAdapter {
         // The old controller references the previous map.
         playerController = new PlayerController(player, gameMap);
 
+        // Re-initialize field of view for the new map
+        visibilityMap = new VisibilityMap(
+            gameMap.getWidth(),
+            gameMap.getHeight()
+        );
+
+        fieldOfView = new FieldOfView(
+            gameMap,
+            visibilityMap,
+            player
+        );
+
+        // updates the renderer's visibility map
+        mapRenderer.setVisibilityMap(visibilityMap);
+        entityRenderer.setVisibilityMap(visibilityMap);
+        itemRenderer.setVisibilityMap(visibilityMap);
+
         // Center the camera on the new player position immediately.
         cameraController.update(
             player.getX(),
             player.getY(),
             gameMap.getHeight()
         );
+
 
         uiRenderer.showNotification("You entered a new dungeon!");
     }
