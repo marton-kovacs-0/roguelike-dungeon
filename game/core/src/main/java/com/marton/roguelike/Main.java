@@ -29,10 +29,8 @@ import java.util.List;
 public class Main extends ApplicationAdapter {
 
     // Renderers
-    private MapRenderer mapRenderer;
-    private EntityRenderer entityRenderer;
+    private WorldRenderer worldRenderer;
     private UiRenderer uiRenderer;
-    private ItemRenderer itemRenderer;
     private ScreenTransition screenTransition;
 
     // Generators and spawners
@@ -120,9 +118,7 @@ public class Main extends ApplicationAdapter {
         fieldOfView.update();
 
         // Initialize renderers
-        mapRenderer = new MapRenderer(mapTileAtlas, visibilityMap);
-        entityRenderer = new EntityRenderer(entityTileAtlas, visibilityMap);
-        itemRenderer = new ItemRenderer(itemTileAtlas, visibilityMap);
+        worldRenderer = new WorldRenderer(mapTileAtlas, entityTileAtlas, itemTileAtlas, visibilityMap);
         uiRenderer = new UiRenderer();
 
         // Spawn enemies and items
@@ -179,8 +175,8 @@ public class Main extends ApplicationAdapter {
         // updates field of view when the player moves
         fieldOfView.update();
 
-        mapRenderer.render(gameMap, camera, debugMapVisible);
-        entityRenderer.render(gameMap, player, enemies, camera, debugMapVisible);
+        // render map, enemies and items
+        worldRenderer.render(gameMap, player, enemies, camera, debugMapVisible);
 
         // Handle inventory UI and drop/delete.
         boolean inventoryOpen = playerController.isInventoryOpen();
@@ -193,7 +189,7 @@ public class Main extends ApplicationAdapter {
             );
         }
 
-        itemRenderer.render(gameMap, camera, debugMapVisible);
+
 
         // Draw the transition overlay last so it covers the entire scene.
         screenTransition.render();
@@ -202,13 +198,11 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
 
-        mapRenderer.dispose();
-        entityRenderer.dispose();
+        worldRenderer.dispose();
         mapTileAtlas.dispose();
         entityTileAtlas.dispose();
         itemTileAtlas.dispose();
         uiRenderer.dispose();
-        itemRenderer.dispose();
         screenTransition.dispose();
     }
 
@@ -246,10 +240,8 @@ public class Main extends ApplicationAdapter {
             player
         );
 
-        // updates the renderer's visibility map
-        mapRenderer.setVisibilityMap(visibilityMap);
-        entityRenderer.setVisibilityMap(visibilityMap);
-        itemRenderer.setVisibilityMap(visibilityMap);
+        // updates the visibility map for all renderers
+        worldRenderer.setVisibilityMap(visibilityMap);
 
         // Center the camera on the new player position immediately.
         cameraController.update(
