@@ -15,9 +15,13 @@ import com.marton.roguelike.render.atlas.MapTileAtlas;
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.GameMap;
 
+import com.marton.roguelike.world.TilePosition;
+import com.marton.roguelike.world.generation.MapGenerator;
 import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
 import com.marton.roguelike.world.generation.enemy.EnemySpawner;
+import com.marton.roguelike.world.generation.enemy.strategy.EnemySpawnStrategyFactory;
 import com.marton.roguelike.world.generation.item.ItemSpawner;
+import com.marton.roguelike.world.generation.metadata.MapGenerationResult;
 import com.marton.roguelike.world.visibility.FieldOfView;
 import com.marton.roguelike.world.visibility.VisibilityMap;
 
@@ -34,7 +38,8 @@ public class Main extends ApplicationAdapter {
     private ScreenTransition screenTransition;
 
     // Generators and spawners
-    private RoomBasedMapGenerator mapGenerator;
+    private MapGenerationResult mapGenerationResult;
+    private MapGenerator mapGenerator;
     private EnemySpawner enemySpawner;
     private ItemSpawner itemSpawner;
 
@@ -73,7 +78,9 @@ public class Main extends ApplicationAdapter {
 
         // Initialize generators and spawners
         mapGenerator = new RoomBasedMapGenerator();
-        enemySpawner = new EnemySpawner();
+
+        enemySpawner = new EnemySpawner(
+            EnemySpawnStrategyFactory.createFor(mapGenerator));
         itemSpawner = new ItemSpawner();
 
         // Initialize camera
@@ -93,7 +100,8 @@ public class Main extends ApplicationAdapter {
 
         // Generate the initial dungeon
         try {
-            gameMap = mapGenerator.generate(100, 100);
+            mapGenerationResult = mapGenerator.generate(100, 100);
+            gameMap = mapGenerationResult.getGameMap();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -122,7 +130,9 @@ public class Main extends ApplicationAdapter {
         uiRenderer = new UiRenderer();
 
         // Spawn enemies and items
-        enemies = enemySpawner.spawnEnemies(gameMap, mapGenerator.getRooms());
+        enemies = enemySpawner.spawnEnemies(
+            mapGenerationResult,
+            new TilePosition((int) player.getX(), (int) player.getY()));
         itemSpawner.spawnItems(gameMap);
     }
 
@@ -209,21 +219,24 @@ public class Main extends ApplicationAdapter {
 
     private void changeLevel() {
         // Generate a completely new dungeon.
-        gameMap = mapGenerator.generate(100, 100);
-
-        // Populate the new dungeon.
-        enemies = enemySpawner.spawnEnemies(
-            gameMap,
-            mapGenerator.getRooms()
-        );
-        itemSpawner.spawnItems(gameMap);
+        mapGenerationResult = mapGenerator.generate(100, 100);
+        gameMap = mapGenerationResult.getGameMap();
 
         // Move the existing player to the new dungeon.
         Cell spawnPoint = gameMap.getRandomWalkableCell();
+
         player.setPosition(
             spawnPoint.getPosition().x(),
             spawnPoint.getPosition().y()
         );
+
+        // Populate the new dungeon.
+        enemies = enemySpawner.spawnEnemies(
+            mapGenerationResult,
+            new TilePosition((int) player.getX(), (int) player.getY())
+        );
+
+        itemSpawner.spawnItems(gameMap);
 
         // The old controller references the previous map.
         playerController = new PlayerController(player, gameMap);

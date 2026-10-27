@@ -7,6 +7,9 @@ import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
 import com.marton.roguelike.world.generation.decoration.ChestPlacement;
 import com.marton.roguelike.world.generation.decoration.ExitPlacement;
+import com.marton.roguelike.world.generation.metadata.MapGenerationResult;
+
+import com.marton.roguelike.world.generation.metadata.RoomBasedMapGenerationResult;
 import com.marton.roguelike.world.generation.room.CorridorGeneration;
 import com.marton.roguelike.world.generation.room.Room;
 import com.marton.roguelike.world.generation.room.RoomGeneration;
@@ -31,7 +34,7 @@ public class RoomBasedMapGenerator implements MapGenerator {
     }
 
     @Override
-    public GameMap generate(int width, int height) {
+    public MapGenerationResult generate(int width, int height) {
         roomGeneration.clearRooms();
         GameMap gameMap = new GameMap(width, height);
 
@@ -60,7 +63,7 @@ public class RoomBasedMapGenerator implements MapGenerator {
             corridorPositions
         );
 
-        return gameMap;
+        return new RoomBasedMapGenerationResult(gameMap, roomGeneration.getRooms());
     }
 
     private void fillWithWalls(GameMap gameMap) {
