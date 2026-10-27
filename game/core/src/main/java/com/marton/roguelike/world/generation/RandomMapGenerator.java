@@ -4,6 +4,8 @@ import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.MapCellType;
 import com.marton.roguelike.world.GameMap;
 import com.marton.roguelike.world.TilePosition;
+import com.marton.roguelike.world.generation.metadata.BasicMapGenerationResult;
+import com.marton.roguelike.world.generation.metadata.MapGenerationResult;
 
 public class RandomMapGenerator implements MapGenerator {
 
@@ -12,7 +14,7 @@ public class RandomMapGenerator implements MapGenerator {
     private static final double TREE_CHANCE = 0.18;
 
     @Override
-    public GameMap generate(int width, int height) {
+    public MapGenerationResult generate(int width, int height) {
         GameMap gameMap = new GameMap(width, height);
 
         for (int y = 0; y < height; y++) {
@@ -25,7 +27,7 @@ public class RandomMapGenerator implements MapGenerator {
             }
         }
 
-        return gameMap;
+        return new BasicMapGenerationResult(gameMap);
     }
 
     private Cell generateRandomCell(int x, int y) {

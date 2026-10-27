@@ -1,7 +1,7 @@
 package com.marton.roguelike.world.generation;
 
-import com.marton.roguelike.world.GameMap;
+import com.marton.roguelike.world.generation.metadata.MapGenerationResult;
 
 public interface MapGenerator {
-    GameMap generate(int width, int height);
+    MapGenerationResult generate(int width, int height);
 }
