@@ -16,8 +16,9 @@ import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.GameMap;
 
 import com.marton.roguelike.world.TilePosition;
-import com.marton.roguelike.world.generation.MapGenerator;
-import com.marton.roguelike.world.generation.RoomBasedMapGenerator;
+import com.marton.roguelike.world.generation.map.CellularAutomataMapGenerator;
+import com.marton.roguelike.world.generation.map.MapGenerator;
+import com.marton.roguelike.world.generation.map.RoomBasedMapGenerator;
 import com.marton.roguelike.world.generation.enemy.EnemySpawner;
 import com.marton.roguelike.world.generation.enemy.strategy.EnemySpawnStrategyFactory;
 import com.marton.roguelike.world.generation.item.ItemSpawner;
@@ -77,10 +78,12 @@ public class Main extends ApplicationAdapter {
         itemTileAtlas = new ItemTileAtlas();
 
         // Initialize generators and spawners
-        mapGenerator = new RoomBasedMapGenerator();
+        mapGenerator = new CellularAutomataMapGenerator();
 
         enemySpawner = new EnemySpawner(
-            EnemySpawnStrategyFactory.createFor(mapGenerator));
+            EnemySpawnStrategyFactory.createFor(mapGenerator)
+        );
+
         itemSpawner = new ItemSpawner();
 
         // Initialize camera

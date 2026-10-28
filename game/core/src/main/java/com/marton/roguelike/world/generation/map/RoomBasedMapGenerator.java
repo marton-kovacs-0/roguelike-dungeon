@@ -1,5 +1,5 @@
 
-package com.marton.roguelike.world.generation;
+package com.marton.roguelike.world.generation.map;
 
 import com.marton.roguelike.world.Cell;
 import com.marton.roguelike.world.MapCellType;
