@@ -15,7 +15,7 @@ public class CellularAutomataMapGenerator implements MapGenerator {
     // Minimum dimensions required for a usable cave layout. (at least 3x3)
     private static final int MINIMUM_MAP_SIZE = 10;
 
-    private static final double FLOOR_CHANCE = 0.45;
+    private static final double FLOOR_CHANCE = 0.43;
     private static final int ITERATIONS = 4;
     private static final int WALL_THRESHOLD = 5;
     private final Random random = new Random();
